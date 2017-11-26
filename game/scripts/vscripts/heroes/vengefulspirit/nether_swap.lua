@@ -60,7 +60,7 @@ function vengefulspirit_nether_swap_lua:OnSpellStart()
     local hTarget = self:GetCursorTarget()
 
     if hCaster == nil or hTarget == nil or hTarget:TriggerSpellAbsorb(self) then
-        return
+        return nil
     end
 
     local vPos1 = hCaster:GetOrigin()
