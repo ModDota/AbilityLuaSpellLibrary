@@ -1,65 +1,127 @@
----@class vengefulspirit_command_aura_lua : CDOTA_Ability_Lua
-vengefulspirit_command_aura_lua = class({})
+LinkLuaModifier("modifier_vengefulspirit_command_aura_effect_lua", "heroes/vengefulspirit/command_aura", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_vengefulspirit_command_aura_lua", "heroes/vengefulspirit/command_aura", LUA_MODIFIER_MOTION_NONE)
 
----@class modifier_vengefulspirit_command_aura_lua : CDOTA_Modifier_Lua
-modifier_vengefulspirit_command_aura_lua = class({})
-LinkLuaModifier( "modifier_vengefulspirit_command_aura_lua", LUA_MODIFIER_MOTION_NONE )
-
+--[[
+==============================
+===== Command Aura Effect ====
+==============================
+--]]
 ---@class modifier_vengefulspirit_command_aura_effect_lua : CDOTA_Modifier_Lua
+---@field bonus_damage_pct number
 modifier_vengefulspirit_command_aura_effect_lua = class({})
-LinkLuaModifier( "modifier_vengefulspirit_command_aura_effect_lua", LUA_MODIFIER_MOTION_NONE )
 
----@return string
-function vengefulspirit_command_aura_lua:GetIntrinsicModifierName()
-	return "modifier_vengefulspirit_command_aura_lua"
+---@override
+---@return boolean
+function modifier_vengefulspirit_command_aura_effect_lua:IsDebuff()
+    if self:GetCaster():GetTeamNumber() ~= self:GetParent():GetTeamNumber() then
+        return true
+    end
+
+    return false
 end
 
+---@override
+---@return nil
+function modifier_vengefulspirit_command_aura_effect_lua:OnCreated()
+    self.bonus_damage_pct = self:GetAbility():GetSpecialValueFor("bonus_damage_pct")
+end
+
+---@override
+---@return nil
+function modifier_vengefulspirit_command_aura_effect_lua:OnRefresh()
+    self.bonus_damage_pct = self:GetAbility():GetSpecialValueFor("bonus_damage_pct")
+end
+
+---@override
+---@return table
+function modifier_vengefulspirit_command_aura_effect_lua:DeclareFunctions()
+    local funcs = {
+        MODIFIER_PROPERTY_BASEDAMAGEOUTGOING_PERCENTAGE,
+    }
+    return funcs
+end
+
+---@override
+---@return number
+function modifier_vengefulspirit_command_aura_effect_lua:GetModifierBaseDamageOutgoing_Percentage()
+    if self:GetCaster():PassivesDisabled() then
+        return 0
+    end
+
+    if self:GetCaster():GetTeamNumber() ~= self:GetParent():GetTeamNumber() then
+        return -self.bonus_damage_pct
+    end
+
+    return self.bonus_damage_pct
+end
+
+--[[
+============================
+===== Command Aura Aura ====
+============================
+--]]
+---@class modifier_vengefulspirit_command_aura_lua : CDOTA_Modifier_Lua
+---@field aura_radius number
+modifier_vengefulspirit_command_aura_lua = class({})
+
+---@override
 ---@return boolean
 function modifier_vengefulspirit_command_aura_lua:IsHidden()
     return true
 end
 
+---@override
 ---@return boolean
 function modifier_vengefulspirit_command_aura_lua:IsAura()
     return true
 end
 
+---@override
 ---@return string
 function modifier_vengefulspirit_command_aura_lua:GetModifierAura()
     return "modifier_vengefulspirit_command_aura_effect_lua"
 end
 
+---@override
 ---@return DOTA_UNIT_TARGET_TEAM
 function modifier_vengefulspirit_command_aura_lua:GetAuraSearchTeam()
     return DOTA_UNIT_TARGET_TEAM_FRIENDLY
 end
 
+---@override
 ---@return DOTA_UNIT_TARGET_TYPE
 function modifier_vengefulspirit_command_aura_lua:GetAuraSearchType()
     return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_CREEP
 end
 
+---@override
 ---@return DOTA_UNIT_TARGET_FLAGS
 function modifier_vengefulspirit_command_aura_lua:GetAuraSearchFlags()
     return DOTA_UNIT_TARGET_FLAG_INVULNERABLE
 end
 
+---@override
 ---@return number
 function modifier_vengefulspirit_command_aura_lua:GetAuraRadius()
     return self.aura_radius
 end
 
-function modifier_vengefulspirit_command_aura_lua:OnCreated( kv )
-    self.aura_radius = self:GetAbility():GetSpecialValueFor( "aura_radius" )
+---@override
+---@return nil
+function modifier_vengefulspirit_command_aura_lua:OnCreated()
+    self.aura_radius = self:GetAbility():GetSpecialValueFor("aura_radius")
     if IsServer() and self:GetParent() ~= self:GetCaster() then
-        self:StartIntervalThink( 0.5 )
+        self:StartIntervalThink(0.5)
     end
 end
 
-function modifier_vengefulspirit_command_aura_lua:OnRefresh( kv )
-    self.aura_radius = self:GetAbility():GetSpecialValueFor( "aura_radius" )
+---@override
+---@return nil
+function modifier_vengefulspirit_command_aura_lua:OnRefresh()
+    self.aura_radius = self:GetAbility():GetSpecialValueFor("aura_radius")
 end
 
+---@override
 ---@return table
 function modifier_vengefulspirit_command_aura_lua:DeclareFunctions()
     local funcs = {
@@ -68,13 +130,14 @@ function modifier_vengefulspirit_command_aura_lua:DeclareFunctions()
     return funcs
 end
 
+--TODO: This should be type annotated externally
 ---@class OnDeathParams
 ---@field attacker CDOTA_BaseNPC
 ---@field unit CDOTA_BaseNPC
 
 ---@param params OnDeathParams
 ---@return number
-function modifier_vengefulspirit_command_aura_lua:OnDeath( params )
+function modifier_vengefulspirit_command_aura_lua:OnDeath(params)
     if IsServer() then
         if self:GetCaster() == nil then
             return 0
@@ -108,11 +171,12 @@ function modifier_vengefulspirit_command_aura_lua:OnDeath( params )
                 local modifierTable = {
                     duration = -1
                 }
-                hAuraHolder:AddNewModifier( self:GetCaster(), self:GetAbility(), "modifier_vengefulspirit_command_aura_lua", modifierTable )
+                --TODO: Figure out why IntelliJ is convinced AddNewModifier does not exist
+                hAuraHolder:AddNewModifier(self:GetCaster(), self:GetAbility(), "modifier_vengefulspirit_command_aura_lua", modifierTable)
 
-                local nFXIndex = ParticleManager:CreateParticle( "particles/units/heroes/hero_vengeful/vengeful_negative_aura.vpcf", PATTACH_ABSORIGIN_FOLLOW, hAuraHolder )
-                ParticleManager:SetParticleControlEnt( nFXIndex, 1, hVictim, PATTACH_ABSORIGIN_FOLLOW, nil, hVictim:GetOrigin(), false )
-                ParticleManager:ReleaseParticleIndex( nFXIndex )
+                local nFXIndex = ParticleManager:CreateParticle("particles/units/heroes/hero_vengeful/vengeful_negative_aura.vpcf", PATTACH_ABSORIGIN_FOLLOW, hAuraHolder)
+                ParticleManager:SetParticleControlEnt(nFXIndex, 1, hVictim, PATTACH_ABSORIGIN_FOLLOW, nil, hVictim:GetOrigin(), false)
+                ParticleManager:ReleaseParticleIndex(nFXIndex )
             end
         end
     end
@@ -126,40 +190,15 @@ function modifier_vengefulspirit_command_aura_lua:OnIntervalThink()
     end
 end
 
----@return boolean
-function modifier_vengefulspirit_command_aura_effect_lua:IsDebuff()
-    if self:GetCaster():GetTeamNumber() ~= self:GetParent():GetTeamNumber() then
-        return true
-    end
+--[[
+=============================
+===== Command Aura Spell ====
+=============================
+--]]
+---@class vengefulspirit_command_aura_lua : CDOTA_Ability_Lua
+vengefulspirit_command_aura_lua = class({})
 
-    return false
-end
-
-function modifier_vengefulspirit_command_aura_effect_lua:OnCreated( kv )
-    self.bonus_damage_pct = self:GetAbility():GetSpecialValueFor( "bonus_damage_pct" )
-end
-
-function modifier_vengefulspirit_command_aura_effect_lua:OnRefresh( kv )
-    self.bonus_damage_pct = self:GetAbility():GetSpecialValueFor( "bonus_damage_pct" )
-end
-
----@return table
-function modifier_vengefulspirit_command_aura_effect_lua:DeclareFunctions()
-    local funcs = {
-        MODIFIER_PROPERTY_BASEDAMAGEOUTGOING_PERCENTAGE,
-    }
-    return funcs
-end
-
----@return number
-function modifier_vengefulspirit_command_aura_effect_lua:GetModifierBaseDamageOutgoing_Percentage( params )
-    if self:GetCaster():PassivesDisabled() then
-        return 0
-    end
-
-    if self:GetCaster():GetTeamNumber() ~= self:GetParent():GetTeamNumber() then
-        return -self.bonus_damage_pct
-    end
-
-    return self.bonus_damage_pct
+---@return string
+function vengefulspirit_command_aura_lua:GetIntrinsicModifierName()
+    return "modifier_vengefulspirit_command_aura_lua"
 end
