@@ -10,37 +10,31 @@ LinkLuaModifier("modifier_vengefulspirit_wave_of_terror_lua", "heroes/vengefulsp
 modifier_vengefulspirit_wave_of_terror_lua = class({})
 
 ---@override
----@return boolean
 function modifier_vengefulspirit_wave_of_terror_lua:IsDebuff()
     return true
 end
 
 ---@override
----@return string
 function modifier_vengefulspirit_wave_of_terror_lua:GetEffectName()
     return "particles/units/heroes/hero_vengeful/vengeful_wave_of_terror_recipient.vpcf"
 end
 
 ---@override
----@return ParticleAttachment_t
 function modifier_vengefulspirit_wave_of_terror_lua:GetEffectAttachType()
     return PATTACH_ABSORIGIN_FOLLOW
 end
 
 ---@override
----@return nil
 function modifier_vengefulspirit_wave_of_terror_lua:OnCreated()
     self.armor_reduction = self:GetAbility():GetSpecialValueFor("armor_reduction")
 end
 
 ---@override
----@return nil
 function modifier_vengefulspirit_wave_of_terror_lua:OnRefresh()
     self.armor_reduction = self:GetAbility():GetSpecialValueFor("armor_reduction")
 end
 
 ---@override
----@return table
 function modifier_vengefulspirit_wave_of_terror_lua:DeclareFunctions()
     local funcs = {
         MODIFIER_PROPERTY_PHYSICAL_ARMOR_BONUS
@@ -49,7 +43,6 @@ function modifier_vengefulspirit_wave_of_terror_lua:DeclareFunctions()
 end
 
 ---@override
----@return number
 function modifier_vengefulspirit_wave_of_terror_lua:GetModifierPhysicalArmorBonus()
     return self.armor_reduction
 end
@@ -73,7 +66,6 @@ end
 vengefulspirit_wave_of_terror_lua = class({})
 
 ---@override
----@return nil
 function vengefulspirit_wave_of_terror_lua:OnSpellStart()
     local vDirection = self:GetCursorPosition() - self:GetCaster():GetOrigin()
     vDirection = vDirection:Normalized()
@@ -109,7 +101,6 @@ function vengefulspirit_wave_of_terror_lua:OnSpellStart()
 end
 
 ---@override
----@return nil
 function vengefulspirit_wave_of_terror_lua:OnProjectileThink(vLocation)
     self.flVisionTimer = self.flVisionTimer - (GameRules:GetGameTime() - self.flLastThinkTime)
 
@@ -121,7 +112,6 @@ function vengefulspirit_wave_of_terror_lua:OnProjectileThink(vLocation)
 end
 
 ---@override
----@return boolean|nil
 function vengefulspirit_wave_of_terror_lua:OnProjectileHit(hTarget, vLocation)
     if hTarget ~= nil then
         local damage = {

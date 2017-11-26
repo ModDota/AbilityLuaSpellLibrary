@@ -10,7 +10,6 @@ function vengefulspirit_nether_swap_lua:GetAOERadius()
 end
 
 ---@override
----@return UnitFilterResult
 function vengefulspirit_nether_swap_lua:CastFilterResultTarget(hTarget)
     if self:GetCaster() == hTarget then
         return UF_FAIL_CUSTOM
@@ -30,7 +29,6 @@ function vengefulspirit_nether_swap_lua:CastFilterResultTarget(hTarget)
 end
 
 ---@override
----@return string
 function vengefulspirit_nether_swap_lua:GetCustomCastErrorTarget(hTarget)
     if self:GetCaster() == hTarget then
         return "#dota_hud_error_cant_cast_on_self"
@@ -48,7 +46,6 @@ function vengefulspirit_nether_swap_lua:GetCustomCastErrorTarget(hTarget)
 end
 
 ---@override
----@return number
 function vengefulspirit_nether_swap_lua:GetCooldown(nLevel)
     if self:GetCaster():HasScepter() then
         return self:GetSpecialValueFor("nether_swap_cooldown_scepter")
@@ -58,7 +55,6 @@ function vengefulspirit_nether_swap_lua:GetCooldown(nLevel)
 end
 
 ---@override
----@return nil
 function vengefulspirit_nether_swap_lua:OnSpellStart()
     local hCaster = self:GetCaster()
     local hTarget = self:GetCursorTarget()

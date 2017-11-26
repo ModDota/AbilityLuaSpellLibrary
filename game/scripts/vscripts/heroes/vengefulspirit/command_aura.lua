@@ -11,7 +11,6 @@ LinkLuaModifier("modifier_vengefulspirit_command_aura_lua", "heroes/vengefulspir
 modifier_vengefulspirit_command_aura_effect_lua = class({})
 
 ---@override
----@return boolean
 function modifier_vengefulspirit_command_aura_effect_lua:IsDebuff()
     if self:GetCaster():GetTeamNumber() ~= self:GetParent():GetTeamNumber() then
         return true
@@ -21,19 +20,16 @@ function modifier_vengefulspirit_command_aura_effect_lua:IsDebuff()
 end
 
 ---@override
----@return nil
 function modifier_vengefulspirit_command_aura_effect_lua:OnCreated()
     self.bonus_damage_pct = self:GetAbility():GetSpecialValueFor("bonus_damage_pct")
 end
 
 ---@override
----@return nil
 function modifier_vengefulspirit_command_aura_effect_lua:OnRefresh()
     self.bonus_damage_pct = self:GetAbility():GetSpecialValueFor("bonus_damage_pct")
 end
 
 ---@override
----@return table
 function modifier_vengefulspirit_command_aura_effect_lua:DeclareFunctions()
     local funcs = {
         MODIFIER_PROPERTY_BASEDAMAGEOUTGOING_PERCENTAGE,
@@ -42,7 +38,6 @@ function modifier_vengefulspirit_command_aura_effect_lua:DeclareFunctions()
 end
 
 ---@override
----@return number
 function modifier_vengefulspirit_command_aura_effect_lua:GetModifierBaseDamageOutgoing_Percentage()
     if self:GetCaster():PassivesDisabled() then
         return 0
@@ -65,49 +60,41 @@ end
 modifier_vengefulspirit_command_aura_lua = class({})
 
 ---@override
----@return boolean
 function modifier_vengefulspirit_command_aura_lua:IsHidden()
     return true
 end
 
 ---@override
----@return boolean
 function modifier_vengefulspirit_command_aura_lua:IsAura()
     return true
 end
 
 ---@override
----@return string
 function modifier_vengefulspirit_command_aura_lua:GetModifierAura()
     return "modifier_vengefulspirit_command_aura_effect_lua"
 end
 
 ---@override
----@return DOTA_UNIT_TARGET_TEAM
 function modifier_vengefulspirit_command_aura_lua:GetAuraSearchTeam()
     return DOTA_UNIT_TARGET_TEAM_FRIENDLY
 end
 
 ---@override
----@return DOTA_UNIT_TARGET_TYPE
 function modifier_vengefulspirit_command_aura_lua:GetAuraSearchType()
     return DOTA_UNIT_TARGET_HERO + DOTA_UNIT_TARGET_CREEP
 end
 
 ---@override
----@return DOTA_UNIT_TARGET_FLAGS
 function modifier_vengefulspirit_command_aura_lua:GetAuraSearchFlags()
     return DOTA_UNIT_TARGET_FLAG_INVULNERABLE
 end
 
 ---@override
----@return number
 function modifier_vengefulspirit_command_aura_lua:GetAuraRadius()
     return self.aura_radius
 end
 
 ---@override
----@return nil
 function modifier_vengefulspirit_command_aura_lua:OnCreated()
     self.aura_radius = self:GetAbility():GetSpecialValueFor("aura_radius")
     if IsServer() and self:GetParent() ~= self:GetCaster() then
@@ -116,13 +103,11 @@ function modifier_vengefulspirit_command_aura_lua:OnCreated()
 end
 
 ---@override
----@return nil
 function modifier_vengefulspirit_command_aura_lua:OnRefresh()
     self.aura_radius = self:GetAbility():GetSpecialValueFor("aura_radius")
 end
 
 ---@override
----@return table
 function modifier_vengefulspirit_command_aura_lua:DeclareFunctions()
     local funcs = {
         MODIFIER_EVENT_ON_DEATH
@@ -136,19 +121,19 @@ end
 ---@field unit CDOTA_BaseNPC
 
 ---@param params OnDeathParams
----@return number
+---@override
 function modifier_vengefulspirit_command_aura_lua:OnDeath(params)
     if IsServer() then
         if self:GetCaster() == nil then
-            return 0
+            return
         end
 
         if self:GetCaster():PassivesDisabled() then
-            return 0
+            return
         end
 
         if self:GetCaster() ~= self:GetParent() then
-            return 0
+            return
         end
 
         local hAttacker = params.attacker
@@ -181,9 +166,10 @@ function modifier_vengefulspirit_command_aura_lua:OnDeath(params)
         end
     end
 
-    return 0
+    return
 end
 
+---@override
 function modifier_vengefulspirit_command_aura_lua:OnIntervalThink()
     if self:GetCaster() ~= self:GetParent() and self:GetCaster():IsAlive() then
         self:Destroy()
@@ -198,7 +184,7 @@ end
 ---@class vengefulspirit_command_aura_lua : CDOTA_Ability_Lua
 vengefulspirit_command_aura_lua = class({})
 
----@return string
+---@override
 function vengefulspirit_command_aura_lua:GetIntrinsicModifierName()
     return "modifier_vengefulspirit_command_aura_lua"
 end

@@ -9,31 +9,26 @@ LinkLuaModifier("modifier_vengefulspirit_magic_missile_lua", "heroes/vengefulspi
 modifier_vengefulspirit_magic_missile_lua = class({})
 
 ---@override
----@return boolean
 function modifier_vengefulspirit_magic_missile_lua:IsDebuff()
     return true
 end
 
 ---@override
----@return boolean
 function modifier_vengefulspirit_magic_missile_lua:IsStunDebuff()
     return true
 end
 
 ---@override
----@return string
 function modifier_vengefulspirit_magic_missile_lua:GetEffectName()
     return "particles/generic_gameplay/generic_stunned.vpcf"
 end
 
 ---@override
----@return ParticleAttachment_t
 function modifier_vengefulspirit_magic_missile_lua:GetEffectAttachType()
     return PATTACH_OVERHEAD_FOLLOW
 end
 
 ---@override
----@return table
 function modifier_vengefulspirit_magic_missile_lua:DeclareFunctions()
     local funcs = {
         MODIFIER_PROPERTY_OVERRIDE_ANIMATION,
@@ -43,13 +38,11 @@ function modifier_vengefulspirit_magic_missile_lua:DeclareFunctions()
 end
 
 ---@override
----@return GameActivity_t
 function modifier_vengefulspirit_magic_missile_lua:GetOverrideAnimation()
     return ACT_DOTA_DISABLED
 end
 
 ---@override
----@return table
 function modifier_vengefulspirit_magic_missile_lua:CheckState()
     local state = {
         [MODIFIER_STATE_STUNNED] = true,
@@ -68,7 +61,6 @@ vengefulspirit_magic_missile_lua = class({})
 
 
 ---@override
----@return nil
 function vengefulspirit_magic_missile_lua:OnSpellStart()
     local info = {
         EffectName = "particles/units/heroes/hero_vengeful/vengeful_magic_missle.vpcf",
@@ -84,7 +76,6 @@ function vengefulspirit_magic_missile_lua:OnSpellStart()
 end
 
 ---@override
----@return boolean|nil
 function vengefulspirit_magic_missile_lua:OnProjectileHit(hTarget, vLocation)
     if hTarget ~= nil and (not hTarget:IsInvulnerable()) and (not hTarget:TriggerSpellAbsorb(self)) and (not hTarget:IsMagicImmune()) then
         EmitSoundOn("Hero_VengefulSpirit.MagicMissileImpact", hTarget)
