@@ -2,7 +2,6 @@
 ModDota AbilityLuaSpellLibrary implementation for Magic Missle
 
 Mechanics correct as at 7.07c (excluding talents)
-See github for contributor list
 --]]
 
 LinkLuaModifier("modifier_vengefulspirit_magic_missile_lua", "heroes/vengefulspirit/magic_missle", LUA_MODIFIER_MOTION_NONE)

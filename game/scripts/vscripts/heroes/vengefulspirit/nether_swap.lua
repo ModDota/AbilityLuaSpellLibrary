@@ -2,7 +2,6 @@
 ModDota AbilityLuaSpellLibrary implementation for Nether Swap
 
 Mechanics correct as at 7.07c
-See github for contributor list
 --]]
 
 ---@class vengeful_nether_swap_lua : CDOTA_Ability_Lua

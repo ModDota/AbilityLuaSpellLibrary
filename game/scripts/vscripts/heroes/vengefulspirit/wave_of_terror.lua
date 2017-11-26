@@ -2,7 +2,6 @@
 ModDota AbilityLuaSpellLibrary implementation for Wave of Terror
 
 Mechanics correct as at 7.07c (excluding talents)
-See github for contributor list
 --]]
 
 LinkLuaModifier("modifier_vengefulspirit_wave_of_terror_lua", "heroes/vengefulspirit/wave_of_terror", LUA_MODIFIER_MOTION_NONE)

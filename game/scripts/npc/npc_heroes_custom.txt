@@ -1,8 +1,6 @@
-/*
-ModDota AbilityLuaSpellLibrary hero override table
-
-See github for contributor list
-*/
+///                                                    ///
+/// ModDota AbilityLuaSpellLibrary hero override table ///
+///                                                    ///
 
 "DOTAHeroes"
 {
