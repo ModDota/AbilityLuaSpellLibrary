@@ -1,5 +1,12 @@
+/*
+ModDota AbilityLuaSpellLibrary hero override table
+
+See github for contributor list
+*/
+
 "DOTAHeroes"
 {
+    // Vengeful Spirit correct as at 7.07c
     "npc_dota_hero_vengefulspirit_lua"
     {
         "override_hero"         "npc_dota_hero_vengefulspirit"

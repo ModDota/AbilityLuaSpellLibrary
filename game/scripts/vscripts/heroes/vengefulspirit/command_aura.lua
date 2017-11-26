@@ -1,3 +1,10 @@
+--[[
+ModDota AbilityLuaSpellLibrary implementation for Vengenge Aura
+
+Mechanics correct as at 7.07c (excluding talents)
+See github for contributor list
+--]]
+
 LinkLuaModifier("modifier_vengefulspirit_command_aura_effect_lua", "heroes/vengefulspirit/command_aura", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_vengefulspirit_command_aura_lua", "heroes/vengefulspirit/command_aura", LUA_MODIFIER_MOTION_NONE)
 
