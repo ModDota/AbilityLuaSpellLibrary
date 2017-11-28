@@ -1,4 +1,5 @@
 #base "heroes/vengefulspirit.kv"
+#base "heroes/tusk.kv"
 "DOTAAbilities"
 {
     "Version"   "1"
