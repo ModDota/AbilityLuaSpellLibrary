@@ -34,8 +34,10 @@ function tusk_snowball_lua:OnSpellStart()
   ParticleManager:ReleaseParticleIndex(particle)
 
   -- Make a dummy to attach the snowball
-  self.dummy = CreateUnitByName("npc_dota_units_base",caster:GetAbsOrigin(),false,nil,nil,caster:GetTeamNumber())
-  self.dummy:AddNewModifier(caster,self,"modifier_tusk_snowball_dummy",{})
+  --self.dummy = CreateUnitByName("npc_dota_units_base",caster:GetAbsOrigin(),false,nil,nil,caster:GetTeamNumber())
+  self.dummy = CreateModifierThinker(caster,self,"modifier_tusk_snowball_dummy",{},caster:GetAbsOrigin(),caster:GetTeamNumber(),false)
+
+  --self.dummy:AddNewModifier(caster,self,"modifier_tusk_snowball_dummy",{})
   -- Snowball model doesn't roll along!
   particle = ParticleManager:CreateParticle("particles/units/heroes/hero_tusk/tusk_snowball.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.dummy)
   ParticleManager:SetParticleControl(particle, 0, caster:GetAbsOrigin())
