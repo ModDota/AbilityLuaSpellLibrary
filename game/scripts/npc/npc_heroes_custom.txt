@@ -4,7 +4,7 @@
 
 "DOTAHeroes"
 {
-    // Vengeful Spirit correct as at 7.07c
+    // Tusk values last updated:7.07c
     "npc_dota_hero_tusk_lua"
     {
         "override_hero"         "npc_dota_hero_tusk"
