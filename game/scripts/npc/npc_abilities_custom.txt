@@ -1,4 +1,6 @@
 #base "heroes/vengefulspirit.kv"
+#base "heroes/antimage.kv"
+
 "DOTAAbilities"
 {
     "Version"   "1"
