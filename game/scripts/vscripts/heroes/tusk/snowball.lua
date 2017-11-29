@@ -1,3 +1,205 @@
+LinkLuaModifier("modifier_tusk_snowball_dummy","heroes/tusk/snowball.lua",LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_tusk_snowball_guest","heroes/tusk/snowball.lua",LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_tusk_snowball_auto_launch_controller","heroes/tusk/snowball.lua",LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_tusk_snowball_target_vision","heroes/tusk/snowball.lua",LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_tusk_snowball_host","heroes/tusk/snowball.lua",LUA_MODIFIER_MOTION_NONE)
+
+---@class modifier_tusk_snowball_dummy : CDOTA_Modifier_Lua
+modifier_tusk_snowball_dummy = class({})
+---@override
+function modifier_tusk_snowball_dummy:IsPermanent() return true end
+---@override
+function modifier_tusk_snowball_dummy:CheckState()
+  return {
+    [MODIFIER_STATE_NO_HEALTH_BAR] = true,
+    [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
+    [MODIFIER_STATE_INVULNERABLE] = true,
+  }
+end
+---@override
+function modifier_tusk_snowball_dummy:OnCreated()
+  if IsServer() then
+    local ability = self:GetAbility()
+    ability.radius = ability:GetSpecialValueFor("snowball_radius")
+    self:StartIntervalThink(1)
+  end
+end
+---@override
+function modifier_tusk_snowball_dummy:OnIntervalThink()
+  local ability = self:GetAbility()
+  -- Update particles
+  local snowball_grow_rate = ability:GetSpecialValueFor("snowball_grow_rate")
+  ability.radius = ability.radius + snowball_grow_rate
+  ParticleManager:SetParticleControl(ability.particle, 3, Vector(ability.radius,ability.radius,ability.radius)) --Radius
+end
+
+
+-- Modifier that autocasts this spell on destruction, so spells swap back etc
+---@class modifier_tusk_snowball_auto_launch_controller : CDOTA_Modifier_Lua
+modifier_tusk_snowball_auto_launch_controller = class({})
+---@override
+function modifier_tusk_snowball_auto_launch_controller:OnDestroy()
+  if IsServer() then
+    self:GetCaster():SwapAbilities("tusk_snowball_lua","tusk_snowball_release_lua",true,false)
+    self:GetCaster():FindAbilityByName("tusk_snowball_release_lua"):OnSpellStart()
+  end
+end
+
+
+-- Provides the vision the target has to tusk's team
+---@class modifier_tusk_snowball_target_vision : CDOTA_Modifier_Lua
+modifier_tusk_snowball_target_vision = class({})
+---@override
+function modifier_tusk_snowball_target_vision:CheckState()
+  return {
+    [MODIFIER_STATE_PROVIDES_VISION] = true,
+  }
+end
+
+
+-- The modifier that gives the properties for tuskar during the snowball time
+---@class modifier_tusk_snowball_host : CDOTA_Modifier_Lua
+modifier_tusk_snowball_host = class({})
+---@override
+function modifier_tusk_snowball_host:IsHidden() return true end
+---@override
+function modifier_tusk_snowball_host:IsPurgable() return false end
+---@override
+function modifier_tusk_snowball_host:IsPurgeException() return false end
+---@override
+function modifier_tusk_snowball_host:IsDebuff() return false end
+
+---@override
+function modifier_tusk_snowball_host:OnCreated()
+  if IsServer() then -- Nothing needs to be done on the client
+    -- Store all the values
+    local ability = self:GetAbility()
+
+    self.snowball_grow_rate = ability:GetSpecialValueFor("snowball_grow_rate")
+    self.snowball_grab_radius = ability:GetSpecialValueFor("snowball_grab_radius")
+
+    -- We can't use AddNoDraw because it makes tusk unclickable
+    --caster:AddNoDraw()
+  end
+end
+
+---@override
+function modifier_tusk_snowball_host:OnDestroy()
+  if IsServer() then -- Nothing needs to be done on the client
+    --self:GetCaster():RemoveNoDraw()
+  end
+end
+
+---@override
+function modifier_tusk_snowball_host:DeclareFunctions()
+  return {
+    MODIFIER_EVENT_ON_ORDER,
+    MODIFIER_PROPERTY_INCOMING_DAMAGE_PERCENTAGE,
+    MODIFIER_PROPERTY_MODEL_CHANGE, -- Required to make the unit clickable
+  }
+end
+-- Required to make the unit clickable
+---@return string
+function modifier_tusk_snowball_host:GetModifierModelChange()
+  return "models/particle/snowball.vmdl"
+end
+
+---@override
+function modifier_tusk_snowball_host:GetModifierIncomingDamage_Percentage()
+  return -1000
+end
+---@override
+function modifier_tusk_snowball_host:CheckState()
+  return {
+    [MODIFIER_STATE_MUTED] = IsServer(), -- Not showing the status bar
+    [MODIFIER_STATE_DISARMED] = IsServer(), -- Not showing the status bar
+    [MODIFIER_STATE_ROOTED] = IsServer(),
+    [MODIFIER_STATE_MAGIC_IMMUNE] = true,
+    --[MODIFIER_STATE_INVULNERABLE] = true, -- These state make allied orders impossible
+    --[MODIFIER_STATE_OUT_OF_GAME] = true,
+    [MODIFIER_STATE_NO_HEALTH_BAR] = true,
+    [MODIFIER_STATE_UNSELECTABLE] = false,
+  }
+end
+
+---@override
+  function modifier_tusk_snowball_host:OnOrder(keys)
+  local caster = self:GetCaster()
+  -- Only act on normal or attack order, this also ensures that there is a target
+  if keys.order_type ~= DOTA_UNIT_ORDER_MOVE_TO_TARGET and keys.order_type ~= DOTA_UNIT_ORDER_ATTACK_TARGET then
+    return
+  end
+
+  if keys.unit == keys.target then return end
+
+  -- Check if either the issuer or the target is the caster
+  if keys.target ~= caster and keys.unit ~= caster then return end
+
+  -- Only allied units can be caught
+  if keys.target:GetTeamNumber() ~= caster:GetTeamNumber() then return end
+  -- Filter out units, illusions do count
+  if not keys.target:IsHero() then return end
+  if keys.unit ~= caster and PlayerResource:IsDisableHelpSetForPlayerID(keys.target:GetPlayerOwnerID(),caster:GetPlayerOwnerID()) then return end
+
+  -- Check if the unit is in range for the grab
+  if (keys.target:GetAbsOrigin() - caster:GetAbsOrigin()):Length2D() >= self.snowball_grab_radius then return end
+
+  local unit = keys.target
+  if unit == caster then
+    unit = keys.unit
+  end
+
+  -- No more reasons to reject
+  self:GetAbility().unitInSnowball[unit] = true
+
+  unit:AddNewModifier(caster,self:GetAbility(),"modifier_tusk_snowball_guest",{duration = 3})
+end
+
+
+
+-- The modifier that handles everything for allies
+---@class modifier_tusk_snowball_guest : CDOTA_Modifier_Lua
+modifier_tusk_snowball_guest = class({})
+---@override
+function modifier_tusk_snowball_guest:IsHidden() return true end
+---@override
+function modifier_tusk_snowball_guest:IsPurgable() return false end
+---@override
+function modifier_tusk_snowball_guest:IsPurgeException() return false end
+---@override
+function modifier_tusk_snowball_guest:IsDebuff() return false end
+
+---@override
+function modifier_tusk_snowball_guest:OnCreated()
+  if IsServer() then -- Nothing needs to be done on the client
+    --Show some effect
+    local particle = ParticleManager:CreateParticle("particles/units/heroes/hero_tusk/tusk_snowball_load.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
+    ParticleManager:SetParticleControl(particle, 0, self:GetParent():GetAbsOrigin())
+    ParticleManager:ReleaseParticleIndex(particle)
+
+    self:GetParent():EmitSound("Hero_Tusk.Snowball.Ally")
+    self:GetParent():AddNoDraw()
+  end
+end
+
+---@override
+function modifier_tusk_snowball_guest:OnDestroy()
+  if IsServer() then -- Nothing needs to be done on the client
+    self:GetParent():RemoveNoDraw()
+  end
+end
+
+---@override
+function modifier_tusk_snowball_guest :CheckState()
+  return {
+    [MODIFIER_STATE_STUNNED] = IsServer(), -- Not showing the stunned bar
+    [MODIFIER_STATE_MAGIC_IMMUNE] = true,
+    [MODIFIER_STATE_INVULNERABLE] = true,
+    [MODIFIER_STATE_OUT_OF_GAME] = true,
+    [MODIFIER_STATE_NO_HEALTH_BAR] = true,
+  }
+end
+
 ---@class tusk_snowball_lua : CDOTA_Ability_Lua
 tusk_snowball_lua = class({})
 ---@override
@@ -7,7 +209,7 @@ end
 
 ---@override
 function tusk_snowball_lua:GetAssociatedPrimaryAbilities()
- return "tusk_snowball_release_lua"
+  return "tusk_snowball_release_lua"
 end
 
 ---@override
@@ -50,7 +252,7 @@ function tusk_snowball_lua:OnSpellStart()
   self.unitsHit = {}
   self.unitInSnowball = {}
   self.unitInSnowball[caster] = true
- end
+end
 
 -- Launches the snowball to target
 function tusk_snowball_lua:ReleaseSnowball()
@@ -103,6 +305,7 @@ function tusk_snowball_lua:OnProjectileThink(vLocation)
   local units = FindUnitsInRadius(caster:GetTeamNumber(),vLocation,nil,self.radius,DOTA_UNIT_TARGET_TEAM_ENEMY,DOTA_UNIT_TARGET_HERO+DOTA_UNIT_TARGET_BASIC,DOTA_UNIT_TARGET_FLAG_NONE,FIND_ANY_ORDER,false)
   for _,unit in pairs(units) do
     if not self.unitsHit[unit] then
+      self.unitsHit[unit] = true
       local damage_table = {
         victim = unit,
         attacker = caster,
@@ -151,212 +354,4 @@ function tusk_snowball_release_lua:OnSpellStart()
   local caster = self:GetCaster()
   caster:RemoveModifierByName("modifier_tusk_snowball_auto_launch_controller")
   caster:FindAbilityByName("tusk_snowball_lua"):ReleaseSnowball()
-end
-
-
-
-LinkLuaModifier("modifier_tusk_snowball_dummy","heroes/tusk/snowball.lua",LUA_MODIFIER_MOTION_NONE)
----@class modifier_tusk_snowball_dummy : CDOTA_Modifier_Lua
-modifier_tusk_snowball_dummy = class({})
----@override
-function modifier_tusk_snowball_dummy:IsPermanent() return true end
----@return table
-function modifier_tusk_snowball_dummy:CheckState()
-  return {
-    [MODIFIER_STATE_NO_HEALTH_BAR] = true,
-    [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
-    [MODIFIER_STATE_INVULNERABLE] = true,
-  }
-end
----@override
-function modifier_tusk_snowball_dummy:OnCreated()
-  if IsServer() then
-    local ability = self:GetAbility()
-    ability.radius = ability:GetSpecialValueFor("snowball_radius")
-    self:StartIntervalThink(1)
-  end
-end
-
----@override
-function modifier_tusk_snowball_dummy:OnIntervalThink()
-  local ability = self:GetAbility()
-  -- Update particles
-  local snowball_grow_rate = ability:GetSpecialValueFor("snowball_grow_rate")
-  ability.radius = ability.radius + snowball_grow_rate
-  ParticleManager:SetParticleControl(ability.particle, 3, Vector(ability.radius,ability.radius,ability.radius)) --Radius
-end
-
-
-
--- Modifier that autocasts this spell on destruction, so spells swap back etc
-LinkLuaModifier("modifier_tusk_snowball_auto_launch_controller","heroes/tusk/snowball.lua",LUA_MODIFIER_MOTION_NONE)
----@class modifier_tusk_snowball_auto_launch_controller : CDOTA_Modifier_Lua
-modifier_tusk_snowball_auto_launch_controller = class({})
----@override
-function modifier_tusk_snowball_auto_launch_controller:OnDestroy()
-  if IsServer() then
-    self:GetCaster():SwapAbilities("tusk_snowball_lua","tusk_snowball_release_lua",true,false)
-    self:GetCaster():FindAbilityByName("tusk_snowball_release_lua"):OnSpellStart()
-  end
-end
-
-
--- Provides the vision the target has to tusk's team
-LinkLuaModifier("modifier_tusk_snowball_target_vision","heroes/tusk/snowball.lua",LUA_MODIFIER_MOTION_NONE)
----@class modifier_tusk_snowball_target_vision : CDOTA_Modifier_Lua
-modifier_tusk_snowball_target_vision = class({})
----@return table
-function modifier_tusk_snowball_target_vision:CheckState()
-  return {
-    [MODIFIER_STATE_PROVIDES_VISION] = true,
-  }
-end
-
-
--- The modifier that gives the properties for tuskar during the snowball time
-LinkLuaModifier("modifier_tusk_snowball_host","heroes/tusk/snowball.lua",LUA_MODIFIER_MOTION_NONE)
----@class modifier_tusk_snowball_host : CDOTA_Modifier_Lua
-modifier_tusk_snowball_host = class({})
----@override
-function modifier_tusk_snowball_host:IsHidden() return true end
----@override
-function modifier_tusk_snowball_host:IsPurgable() return false end
----@override
-function modifier_tusk_snowball_host:IsPurgeException() return false end
----@override
-function modifier_tusk_snowball_host:IsDebuff() return false end
-
----@override
-function modifier_tusk_snowball_host:OnCreated()
-  if IsServer() then -- Nothing needs to be done on the client
-    -- Store all the values
-    local ability = self:GetAbility()
-
-    self.snowball_grow_rate = ability:GetSpecialValueFor("snowball_grow_rate")
-    self.snowball_grab_radius = ability:GetSpecialValueFor("snowball_grab_radius")
-
-    self.units_inside = 0
-
-    --caster:AddNoDraw()
-
-  end
-end
-
----@override
-function modifier_tusk_snowball_host:OnDestroy()
-  if IsServer() then -- Nothing needs to be done on the client
-    --self:GetCaster():RemoveNoDraw()
-  end
-end
-
----@return table
-function modifier_tusk_snowball_host:DeclareFunctions()
-  return {
-    MODIFIER_EVENT_ON_ORDER,
-    MODIFIER_PROPERTY_INCOMING_DAMAGE_PERCENTAGE,
-    MODIFIER_PROPERTY_MODEL_CHANGE,
-  }
-end
--- Required to make the unit clickable
----@return string
-function modifier_tusk_snowball_host:GetModifierModelChange()
-  return "models/particle/snowball.vmdl"
-end
-
----@return number
-function modifier_tusk_snowball_host:GetModifierIncomingDamage_Percentage()
-  return -1000
-end
----@return table
-function modifier_tusk_snowball_host:CheckState()
-  return {
-    [MODIFIER_STATE_MUTED] = IsServer(), -- Not showing the status bar
-    [MODIFIER_STATE_DISARMED] = IsServer(), -- Not showing the status bar
-    [MODIFIER_STATE_ROOTED] = IsServer(),
-    [MODIFIER_STATE_MAGIC_IMMUNE] = true,
-    --[MODIFIER_STATE_INVULNERABLE] = true, -- These state make allied orders impossible
-    --[MODIFIER_STATE_OUT_OF_GAME] = true,
-    [MODIFIER_STATE_NO_HEALTH_BAR] = true,
-    [MODIFIER_STATE_UNSELECTABLE] = false,
-  }
-end
-
----@return
----@param keys table
-  function modifier_tusk_snowball_host:OnOrder(keys)
-  local caster = self:GetCaster()
-  -- Only act on normal or attack order, this also ensures that there is a target
-  if keys.order_type ~= DOTA_UNIT_ORDER_MOVE_TO_TARGET and keys.order_type ~= DOTA_UNIT_ORDER_ATTACK_TARGET then
-    return
-  end
-
-  if keys.unit == keys.target then return end
-
-  -- Check if either the issuer or the target is the caster
-  if keys.target ~= caster and keys.unit ~= caster then return end
-
-  -- Only allied units can be caught
-  if keys.target:GetTeamNumber() ~= caster:GetTeamNumber() then return end
-  -- Filter out units, illusions do count
-  if not keys.target:IsHero() then return end
-  if keys.unit ~= caster and PlayerResource:IsDisableHelpSetForPlayerID(keys.target:GetPlayerOwnerID(),caster:GetPlayerOwnerID()) then return end
-
-  -- Check if the unit is in range for the grab
-  if (keys.target:GetAbsOrigin() - caster:GetAbsOrigin()):Length2D() >= self.snowball_grab_radius then return end
-
-  local unit = keys.target
-  if unit == caster then
-    unit = keys.unit
-  end
-
-  -- No more reasons to reject
-  self:GetAbility().unitInSnowball[unit] = true
-
-  unit:AddNewModifier(caster,self:GetAbility(),"modifier_tusk_snowball_guest",{duration = 3})
-end
-
-
-
--- The modifier that handles everything for allies
-LinkLuaModifier("modifier_tusk_snowball_guest","heroes/tusk/snowball.lua",LUA_MODIFIER_MOTION_NONE)
----@class modifier_tusk_snowball_guest : CDOTA_Modifier_Lua
-modifier_tusk_snowball_guest = class({})
----@override
-function modifier_tusk_snowball_guest:IsHidden() return true end
----@override
-function modifier_tusk_snowball_guest:IsPurgable() return false end
----@override
-function modifier_tusk_snowball_guest:IsPurgeException() return false end
----@override
-function modifier_tusk_snowball_guest:IsDebuff() return false end
-
----@override
-function modifier_tusk_snowball_guest:OnCreated()
-  if IsServer() then -- Nothing needs to be done on the client
-    --Show some effect
-    local particle = ParticleManager:CreateParticle("particles/units/heroes/hero_tusk/tusk_snowball_load.vpcf", PATTACH_ABSORIGIN_FOLLOW, self:GetParent())
-    ParticleManager:SetParticleControl(particle, 0, self:GetParent():GetAbsOrigin())
-    ParticleManager:ReleaseParticleIndex(particle)
-
-    self:GetParent():EmitSound("Hero_Tusk.Snowball.Ally")
-    self:GetParent():AddNoDraw()
-  end
-end
-
----@override
-function modifier_tusk_snowball_guest:OnDestroy()
-  if IsServer() then -- Nothing needs to be done on the client
-    self:GetParent():RemoveNoDraw()
-  end
-end
-
----@return table
-function modifier_tusk_snowball_guest :CheckState()
-  return {
-    [MODIFIER_STATE_STUNNED] = IsServer(), -- Not showing the stunned bar
-    [MODIFIER_STATE_MAGIC_IMMUNE] = true,
-    [MODIFIER_STATE_INVULNERABLE] = true,
-    [MODIFIER_STATE_OUT_OF_GAME] = true,
-    [MODIFIER_STATE_NO_HEALTH_BAR] = true,
-  }
 end

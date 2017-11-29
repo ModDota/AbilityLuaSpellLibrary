@@ -1,3 +1,17 @@
+LinkLuaModifier("modifier_tusk_ice_shards_dummy","heroes/tusk/ice_shards.lua",LUA_MODIFIER_MOTION_NONE)
+---@class modifier_tusk_ice_shards_dummy : CDOTA_Modifier_Lua
+modifier_tusk_ice_shards_dummy = class({})
+---@override
+function modifier_tusk_ice_shards_dummy:IsPermanent() return true end
+---@return table
+function modifier_tusk_ice_shards_dummy:CheckState()
+  return {
+    [MODIFIER_STATE_NO_HEALTH_BAR] = true,
+    [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
+    [MODIFIER_STATE_INVULNERABLE] = true,
+  }
+end
+
 ---@class tusk_ice_shards_lua : CDOTA_Ability_Lua
 tusk_ice_shards_lua = class({})
 
@@ -101,17 +115,3 @@ function tusk_ice_shards_lua:RemoveShards()
   self.blockers = nil
 end
 
-
-LinkLuaModifier("modifier_tusk_ice_shards_dummy","heroes/tusk/ice_shards.lua",LUA_MODIFIER_MOTION_NONE)
----@class modifier_tusk_ice_shards_dummy : CDOTA_Modifier_Lua
-modifier_tusk_ice_shards_dummy = class({})
----@override
-function modifier_tusk_ice_shards_dummy:IsPermanent() return true end
----@return table
-function modifier_tusk_ice_shards_dummy:CheckState()
-  return {
-    [MODIFIER_STATE_NO_HEALTH_BAR] = true,
-    [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
-    [MODIFIER_STATE_INVULNERABLE] = true,
-  }
-end
