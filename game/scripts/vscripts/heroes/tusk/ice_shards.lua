@@ -1,16 +1,4 @@
 LinkLuaModifier("modifier_tusk_ice_shards_dummy","heroes/tusk/ice_shards.lua",LUA_MODIFIER_MOTION_NONE)
----@class modifier_tusk_ice_shards_dummy : CDOTA_Modifier_Lua
-modifier_tusk_ice_shards_dummy = class({})
----@override
-function modifier_tusk_ice_shards_dummy:IsPermanent() return true end
----@return table
-function modifier_tusk_ice_shards_dummy:CheckState()
-    return {
-        [MODIFIER_STATE_NO_HEALTH_BAR] = true,
-        [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
-        [MODIFIER_STATE_INVULNERABLE] = true,
-    }
-end
 
 ---@class tusk_ice_shards_lua : CDOTA_Ability_Lua
 tusk_ice_shards_lua = class({})
@@ -38,7 +26,7 @@ function tusk_ice_shards_lua:OnSpellStart()
     direction.z = 0
     -- Store this to decide in which way the arc goes
     self.direction = direction
-    -- Create a dummy to block creep spawns
+    -- Create a dummy to block creep spawns, a modifier thinker does NOT do this!
     self.dummy = CreateUnitByName("npc_dota_units_base",caster:GetAbsOrigin(),false,nil,nil,caster:GetTeamNumber())
     self.dummy:AddNewModifier(caster,self,"modifier_tusk_ice_shards_dummy",{})
     local projectile_table = {
@@ -62,7 +50,7 @@ function tusk_ice_shards_lua:OnSpellStart()
         iVisionTeamNumber = caster:GetTeamNumber()
     }
     ProjectileManager:CreateLinearProjectile(projectile_table)
-    
+
     caster:EmitSound("Hero_Tusk.IceShards.Projectile")
 end
 ---@override
@@ -103,7 +91,7 @@ function tusk_ice_shards_lua:OnProjectileHit(hTarget, vLocation)
             self.shards[i]:SetModelScale(15)]]
             ParticleManager:SetParticleControl(particle,i+1,position)
         end
-        
+
         self:SetContextThink("think_duration",function() self:RemoveShards() end,self:GetSpecialValueFor("shard_duration"))
     end
 end
@@ -114,4 +102,18 @@ function tusk_ice_shards_lua:RemoveShards()
     end
     self.blockers = nil
 end
+
+---@class modifier_tusk_ice_shards_dummy : CDOTA_Modifier_Lua
+modifier_tusk_ice_shards_dummy = class({})
+---@override
+function modifier_tusk_ice_shards_dummy:IsPermanent() return true end
+---@return table
+function modifier_tusk_ice_shards_dummy:CheckState()
+    return {
+        [MODIFIER_STATE_NO_HEALTH_BAR] = true,
+        [MODIFIER_STATE_NO_UNIT_COLLISION] = true,
+        [MODIFIER_STATE_INVULNERABLE] = true,
+    }
+end
+
 

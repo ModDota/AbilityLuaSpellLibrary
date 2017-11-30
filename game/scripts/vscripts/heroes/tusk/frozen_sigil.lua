@@ -1,6 +1,24 @@
 LinkLuaModifier("modifier_tusk_sigil_slow_aura","heroes/tusk/frozen_sigil.lua",LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_tusk_sigil_slow_aura_modifier","heroes/tusk/frozen_sigil.lua",LUA_MODIFIER_MOTION_NONE)
 
+---@class tusk_frozen_sigil_lua : CDOTA_Ability_Lua
+tusk_frozen_sigil_lua = class({})
+---@override
+function tusk_frozen_sigil_lua:OnSpellStart()
+    local caster = self:GetCaster()
+    local sigil_duration = self:GetSpecialValueFor("sigil_duration")
+    -- Unit can be found in npc_dota_units.txt file
+    local unit = CreateUnitByName("npc_dota_tusk_frozen_sigil"..self:GetLevel(),caster:GetAbsOrigin(),false,caster,caster:GetPlayerOwner(),caster:GetTeamNumber())
+    unit:SetControllableByPlayer(caster:GetPlayerOwnerID(),false)
+    --Transfer this ability to the sigil, so there can't be nil references when this is stolen
+    local ability = unit:AddAbility(self:GetAbilityName())
+    ability:SetLevel(self:GetLevel())
+    ability:SetHidden(true)
+    -- Default modifier, can't be recreated.
+    unit:AddNewModifier(caster,ability,"modifier_kill",{duration = sigil_duration})
+    unit:AddNewModifier(caster,ability,"modifier_tusk_sigil_slow_aura",{duration = sigil_duration})
+end
+
 ---@class modifier_tusk_sigil_slow_aura : CDOTA_Modifier_Lua
 modifier_tusk_sigil_slow_aura = class({})
 ---@override
@@ -90,20 +108,3 @@ function modifier_tusk_sigil_slow_aura_modifier :GetStatusEffectName()
     return "particles/units/heroes/hero_tusk/tusk_frozen_sigil_status.vpcf"
 end
 
----@class tusk_frozen_sigil_lua : CDOTA_Ability_Lua
-tusk_frozen_sigil_lua = class({})
----@override
-function tusk_frozen_sigil_lua:OnSpellStart()
-    local caster = self:GetCaster()
-    local sigil_duration = self:GetSpecialValueFor("sigil_duration")
-    -- Unit can be found in npc_dota_units.txt file
-    local unit = CreateUnitByName("npc_dota_tusk_frozen_sigil"..self:GetLevel(),caster:GetAbsOrigin(),false,caster,caster:GetPlayerOwner(),caster:GetTeamNumber())
-    unit:SetControllableByPlayer(caster:GetPlayerOwnerID(),false)
-    --Transfer this ability to the sigil, so there can't be nil references when this is stolen
-    local ability = unit:AddAbility(self:GetAbilityName())
-    ability:SetLevel(self:GetLevel())
-    ability:SetHidden(true)
-    -- Default modifier, can't be recreated.
-    unit:AddNewModifier(caster,ability,"modifier_kill",{duration = sigil_duration})
-    unit:AddNewModifier(caster,ability,"modifier_tusk_sigil_slow_aura",{duration = sigil_duration})
-end

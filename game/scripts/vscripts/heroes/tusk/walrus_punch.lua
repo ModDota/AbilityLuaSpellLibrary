@@ -4,6 +4,35 @@ LinkLuaModifier("modifier_tusk_walrus_punch_crit","heroes/tusk/walrus_punch.lua"
 LinkLuaModifier("modifier_tusk_walrus_punch_slow","heroes/tusk/walrus_punch.lua",LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_tusk_walrus_punch_flying","heroes/tusk/walrus_punch.lua",LUA_MODIFIER_MOTION_NONE)
 
+---@class tusk_walrus_punch_lua : CDOTA_Ability_Lua
+tusk_walrus_punch_lua = class({})
+
+---@override
+function tusk_walrus_punch_lua:GetIntrinsicModifierName()
+    return "modifier_tusk_walrus_punch_lua"
+end
+
+---@param hTarget CDOTA_BaseNPC
+function tusk_walrus_punch_lua:CastWalrusPunch(hTarget)
+    local caster = self:GetCaster()
+    local target = hTarget
+
+    local air_time_duration = self:GetSpecialValueFor("air_time")
+    local duration = self:GetSpecialValueFor("slow_duration")
+
+    caster:AddNewModifier(caster,self,"modifier_tusk_walrus_punch_crit",{})
+    -- Could also be in OnAttackLanded
+    target:AddNewModifier(caster,self,"modifier_tusk_walrus_punch_flying",{duration = air_time_duration})
+    target:AddNewModifier(caster,self,"modifier_tusk_walrus_punch_slow",{duration = duration})
+
+    -- Text particles
+    local particle = ParticleManager:CreateParticle("particles/units/heroes/hero_tusk/tusk_walruspunch_txt_ult.vpcf", PATTACH_ABSORIGIN, caster)
+    ParticleManager:SetParticleControl(particle, 2, caster:GetAbsOrigin()+Vector(0,0,175))
+    ParticleManager:ReleaseParticleIndex(particle)
+
+    caster:EmitSound("Hero_Tusk.WalrusPunch.Cast")
+end
+
 ---@class modifier_tusk_walrus_punch_lua : CDOTA_Modifier_Lua
 modifier_tusk_walrus_punch_lua = class({})
 
@@ -165,31 +194,3 @@ function modifier_tusk_walrus_punch_slow:GetStatusEffectName()
     return "particles/units/heroes/hero_tusk/tusk_walruspunch_status.vpcf"
 end
 
----@class tusk_walrus_punch_lua : CDOTA_Ability_Lua
-tusk_walrus_punch_lua = class({})
-
----@override
-function tusk_walrus_punch_lua:GetIntrinsicModifierName()
-    return "modifier_tusk_walrus_punch_lua"
-end
-
----@param hTarget CDOTA_BaseNPC
-function tusk_walrus_punch_lua:CastWalrusPunch(hTarget)
-    local caster = self:GetCaster()
-    local target = hTarget
-    
-    local air_time_duration = self:GetSpecialValueFor("air_time")
-    local duration = self:GetSpecialValueFor("slow_duration")
-    
-    caster:AddNewModifier(caster,self,"modifier_tusk_walrus_punch_crit",{})
-    -- Could also be in OnAttackLanded
-    target:AddNewModifier(caster,self,"modifier_tusk_walrus_punch_flying",{duration = air_time_duration})
-    target:AddNewModifier(caster,self,"modifier_tusk_walrus_punch_slow",{duration = duration})
-    
-    -- Text particles
-    local particle = ParticleManager:CreateParticle("particles/units/heroes/hero_tusk/tusk_walruspunch_txt_ult.vpcf", PATTACH_ABSORIGIN, caster)
-    ParticleManager:SetParticleControl(particle, 2, caster:GetAbsOrigin()+Vector(0,0,175))
-    ParticleManager:ReleaseParticleIndex(particle)
-    
-    caster:EmitSound("Hero_Tusk.WalrusPunch.Cast")
-end

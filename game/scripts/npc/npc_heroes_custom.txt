@@ -25,7 +25,7 @@
         "Ability16"     "special_bonus_unique_tusk_4_lua"
         "Ability17"     "special_bonus_unique_tusk_5_lua"
     }
-    // Vengeful Spirit correct as at 7.07c
+    // Vengeful Spirit values last updated:7.07c
     "npc_dota_hero_vengefulspirit_lua"
     {
         "override_hero"         "npc_dota_hero_vengefulspirit"

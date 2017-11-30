@@ -1,5 +1,54 @@
 LinkLuaModifier("modifier_tusk_walrus_kick_flying","heroes/tusk/walrus_kick.lua",LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_tusk_walrus_kick_slow","heroes/tusk/walrus_kick.lua",LUA_MODIFIER_MOTION_NONE)
+
+---@class tusk_walrus_kick_lua : CDOTA_Ability_Lua
+tusk_walrus_kick_lua = class({})
+
+---@override
+function tusk_walrus_kick_lua:OnInventoryContentsChanged()
+    self:SetHidden(not self:GetCaster():HasScepter())
+    -- Find the scepter and make it undroppable
+    for i=DOTA_ITEM_SLOT_1,DOTA_ITEM_SLOT_6 do
+        local item =  self:GetCaster():GetItemInSlot(i)
+        if item then
+            item:SetDroppable(false)
+            item:SetSellable(false)
+            item:SetCanBeUsedOutOfInventory(false ) -- Would this prevent it from going in backpack?
+        end
+    end
+
+    self:SetLevel(1)
+end
+---@override
+function tusk_walrus_kick_lua:OnSpellStart()
+    local caster = self:GetCaster()
+    local target = self:GetCursorTarget()
+    local direction = caster:GetForwardVector()
+    local air_time_duration = self:GetSpecialValueFor("air_time")
+    local duration = self:GetSpecialValueFor("slow_duration")
+    local damage = self:GetSpecialValueFor("damage")
+    local damage_type = self:GetAbilityDamageType()
+
+    local damage_table = {
+        ability = self,
+        attacker = caster,
+        victim = target,
+        damage = damage,
+        damage_type = damage_type,
+    }
+
+    ApplyDamage(damage_table)
+
+    target:AddNewModifier(caster,self,"modifier_tusk_walrus_kick_flying",{duration = air_time_duration,dir_x = direction.x,dir_y=direction.y})
+    target:AddNewModifier(caster,self,"modifier_tusk_walrus_kick_slow",{duration = duration})
+
+    -- Text particles
+    local particle = ParticleManager:CreateParticle("particles/units/heroes/hero_tusk/tusk_walruskick_txt_ult.vpcf", PATTACH_ABSORIGIN, caster)
+    ParticleManager:SetParticleControl(particle, 2, caster:GetAbsOrigin()+Vector(0,0,175))
+    ParticleManager:ReleaseParticleIndex(particle)
+    caster:EmitSound("Hero_Tusk.WalrusKick.Target")
+end
+
 -- This modifier does not yet use a motion controller! It should start using some system to prevent conflicts
 ---@class modifier_tusk_walrus_kick_flying : CDOTA_Modifier_Lua
 modifier_tusk_walrus_kick_flying = class({})
@@ -83,50 +132,3 @@ function modifier_tusk_walrus_kick_slow:GetStatusEffectName()
     return "particles/units/heroes/hero_tusk/tusk_walruspunch_status.vpcf"
 end
 
----@class tusk_walrus_kick_lua : CDOTA_Ability_Lua
-tusk_walrus_kick_lua = class({})
-
----@override
-function tusk_walrus_kick_lua:OnInventoryContentsChanged()
-    self:SetHidden(not self:GetCaster():HasScepter())
-    -- Find the scepter and make it undroppable
-    for i=DOTA_ITEM_SLOT_1,DOTA_ITEM_SLOT_6 do
-        local item =  self:GetCaster():GetItemInSlot(i)
-        if item then
-            item:SetDroppable(false)
-            item:SetSellable(false)
-            item:SetCanBeUsedOutOfInventory(false ) -- Would this prevent it from going in backpack?
-        end
-    end
-    
-    self:SetLevel(1)
-end
----@override
-function tusk_walrus_kick_lua:OnSpellStart()
-    local caster = self:GetCaster()
-    local target = self:GetCursorTarget()
-    local direction = caster:GetForwardVector()
-    local air_time_duration = self:GetSpecialValueFor("air_time")
-    local duration = self:GetSpecialValueFor("slow_duration")
-    local damage = self:GetSpecialValueFor("damage")
-    local damage_type = self:GetAbilityDamageType()
-    
-    local damage_table = {
-        ability = self,
-        attacker = caster,
-        victim = target,
-        damage = damage,
-        damage_type = damage_type,
-    }
-    
-    ApplyDamage(damage_table)
-    
-    target:AddNewModifier(caster,self,"modifier_tusk_walrus_kick_flying",{duration = air_time_duration,dir_x = direction.x,dir_y=direction.y})
-    target:AddNewModifier(caster,self,"modifier_tusk_walrus_kick_slow",{duration = duration})
-    
-    -- Text particles
-    local particle = ParticleManager:CreateParticle("particles/units/heroes/hero_tusk/tusk_walruskick_txt_ult.vpcf", PATTACH_ABSORIGIN, caster)
-    ParticleManager:SetParticleControl(particle, 2, caster:GetAbsOrigin()+Vector(0,0,175))
-    ParticleManager:ReleaseParticleIndex(particle)
-    caster:EmitSound("Hero_Tusk.WalrusKick.Target")
-end
