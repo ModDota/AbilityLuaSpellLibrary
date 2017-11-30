@@ -4,7 +4,28 @@
 
 "DOTAHeroes"
 {
-    // Vengeful Spirit correct as at 7.07c
+    // Tusk values last updated:7.07c
+    "npc_dota_hero_tusk_lua"
+    {
+        "override_hero"         "npc_dota_hero_tusk"
+
+        "Ability1"      "tusk_ice_shards_lua"
+        "Ability2"      "tusk_snowball_lua"
+        "Ability3"      "tusk_frozen_sigil_lua"
+        "Ability4"      "tusk_walrus_kick_lua"
+        "Ability5"      "generic_hidden"
+        "Ability6"      "tusk_walrus_punch_lua"
+        "Ability7"      "tusk_snowball_release_lua"
+        "Ability10"     "special_bonus_exp_boost_40"
+        "Ability11"     "special_bonus_gold_income_15"
+        "Ability12"     "special_bonus_hp_350"
+        "Ability13"     "special_bonus_unique_tusk_2_lua"
+        "Ability14"     "special_bonus_unique_tusk_3_lua"
+        "Ability15"     "special_bonus_unique_tusk_lua"
+        "Ability16"     "special_bonus_unique_tusk_4_lua"
+        "Ability17"     "special_bonus_unique_tusk_5_lua"
+    }
+    // Vengeful Spirit values last updated:7.07c
     "npc_dota_hero_vengefulspirit_lua"
     {
         "override_hero"         "npc_dota_hero_vengefulspirit"
