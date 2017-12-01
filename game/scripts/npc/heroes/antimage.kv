@@ -1,0 +1,173 @@
+///                                                           ///
+/// ModDota AbilityLuaSpellLibrary spells for Anti Mage       ///
+///                                                           ///
+/// Last Update: 7.07c                                        ///
+///                                                           ///
+
+"DOTAAbilities"
+{
+    //=================================================================================================================
+    // Ability: Antimage Mana Break
+    //=================================================================================================================
+    "lua_antimage_mana_break"
+    {
+        // General
+        //-------------------------------------------------------------------------------------------------------------        
+        "BaseClass"                     "ability_lua"
+        "AbilityBehavior"               "DOTA_ABILITY_BEHAVIOR_PASSIVE"
+        "AbilityUnitDamageType"         "DAMAGE_TYPE_PHYSICAL"      
+        "SpellImmunityType"             "SPELL_IMMUNITY_ENEMIES_NO"
+        "AbilitySound"                  "Hero_Antimage.ManaBreak"
+        "ScriptFile"                    "heroes/antimage/antimage_mana_break"
+
+        // Special  
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"              "FIELD_FLOAT"
+                "damage_per_burn"       "0.5"
+            }
+            "02"
+            {
+                "var_type"              "FIELD_INTEGER"
+                "mana_per_hit"          "28 40 52 64"
+            }
+        }
+        "AbilityCastAnimation"      "ACT_DOTA_CAST_ABILITY_1"
+    }
+
+    //=================================================================================================================
+    // Ability: Antimage Blink
+    //=================================================================================================================
+    "lua_antimage_blink"
+    {
+        // General
+        //-------------------------------------------------------------------------------------------------------------
+        "BaseClass"                     "ability_lua"
+        "AbilityBehavior"               "DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_ROOT_DISABLES"
+        "ScriptFile"                    "heroes/antimage/antimage_blink"
+
+        // Casting
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCastPoint"              "0.4 0.4 0.4 0.4"
+
+        // Time     
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCooldown"               "15 12 9 6"
+        
+        // Cost
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityManaCost"               "60"
+        
+        "AbilitySound"                  "Hero_Antimage.Blink_out"
+
+        // Special  
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"              "FIELD_INTEGER"
+                "blink_range"           "925 1000 1075 1150"
+                "LinkedSpecialBonus"    "special_bonus_unique_antimage_3"
+            }            
+        }
+        "AbilityCastAnimation"      "ACT_DOTA_CAST_ABILITY_2"
+    }
+
+    //=================================================================================================================
+    // Ability: Antimage Spell Shield
+    //=================================================================================================================
+    "lua_antimage_spell_shield"
+    {
+        // General
+        //-------------------------------------------------------------------------------------------------------------
+        "BaseClass"                     "ability_lua"
+        "AbilityBehavior"               "DOTA_ABILITY_BEHAVIOR_PASSIVE"
+        "ScriptFile"                    "heroes/antimage/antimage_spell_shield"
+
+        "HasScepterUpgrade"         "1"
+
+        // Special
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"                      "FIELD_INTEGER"
+                "spell_shield_resistance"       "20 30 40 50"
+                "LinkedSpecialBonus"            "special_bonus_unique_antimage_4"
+            }
+            "02"
+            {
+                "var_type"              "FIELD_INTEGER"
+                "scepter_cooldown"      "12"
+            }
+        }
+        "AbilityCastAnimation"      "ACT_DOTA_CAST_ABILITY_3"
+    }
+
+
+    //=================================================================================================================
+    // Ability: Antimage Mana Void
+    //=================================================================================================================
+    "lua_antimage_mana_void"
+    {
+        // General
+        //-------------------------------------------------------------------------------------------------------------        
+        "BaseClass"                     "ability_lua"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_ULTIMATE"
+        "AbilityBehavior"               "DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AOE"
+        "AbilityUnitTargetTeam"         "DOTA_UNIT_TARGET_TEAM_ENEMY"
+        "AbilityUnitTargetType"         "DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+        "AbilityUnitTargetFlags"        "DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
+        "SpellImmunityType"             "SPELL_IMMUNITY_ENEMIES_YES"
+        "AbilityUnitDamageType"         "DAMAGE_TYPE_MAGICAL"       
+        "FightRecapLevel"               "2"
+        "AbilitySound"                  "Hero_Antimage.ManaVoid"
+        "ScriptFile"                    "heroes/antimage/antimage_mana_void"
+
+        // Casting
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCastRange"              "600"
+        "AbilityCastPoint"              "0.3 0.3 0.3 0.3"
+        "AbilityCastAnimation"          "ACT_DOTA_CAST_ABILITY_4"
+        
+        // Time     
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCooldown"               "70.0 70.0 70.0"
+
+        // Cost
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityManaCost"               "125 200 275"
+
+        // Stats
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityModifierSupportValue"   "0.0"   // damage only
+        
+        // Special
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"                      "FIELD_FLOAT"
+                "mana_void_damage_per_mana"     "0.6 0.85 1.1"
+            }
+            
+            "02"
+            {
+                "var_type"                      "FIELD_FLOAT"
+                "mana_void_ministun"            "0.3"
+            }
+            
+            "03"
+            {
+                "var_type"                      "FIELD_INTEGER"
+                "mana_void_aoe_radius"          "500"
+            }
+        }
+    }
+}
