@@ -1,5 +1,6 @@
 #base "heroes/vengefulspirit.kv"
 #base "heroes/antimage.kv"
+#base "heroes/tusk.kv"
 
 "DOTAAbilities"
 {
