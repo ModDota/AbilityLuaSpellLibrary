@@ -36,7 +36,9 @@ function modifier_lua_antimage_mana_break:OnCreated()
 end
 
 function modifier_lua_antimage_mana_break:OnRefresh()
-    self:OnCreated()
+    -- Refresh specials
+    self.damage_per_burn = self.ability:GetSpecialValueFor("damage_per_burn")
+    self.mana_per_hit = self.ability:GetSpecialValueFor("mana_per_hit")
 end
 
 function modifier_lua_antimage_mana_break:DeclareFunctions()

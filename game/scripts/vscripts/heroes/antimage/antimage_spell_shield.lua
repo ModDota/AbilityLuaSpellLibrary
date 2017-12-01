@@ -43,32 +43,34 @@ function modifier_lua_antimage_spell_shield:OnCreated()
     
     if IsServer() then
         -- Think, in order to check for scepter. Once a scepter is found, the modifier's interval starts
-        Timers:CreateTimer(function()            
-            if self.caster:HasScepter() then
-                self:StartIntervalThink(0.2)
-            else
-                return 20
-            end
-        end)
+        self:StartIntervalThink(20)
     end
 end
 
 function modifier_lua_antimage_spell_shield:OnRefresh()
-    self:OnCreated()
+    -- Refresh specials
+    self.spell_shield_resistance = self.ability:GetSpecialValueFor("spell_shield_resistance")    
 end
 
 -- Biggest thanks to Yunten and AtroCty
--- Deleting old abilities
 function modifier_lua_antimage_spell_shield:OnIntervalThink()
-    if IsServer() then                
+    if IsServer() then
+        -- Continually checks if the caster has a scepter. If it does, thinking becomes much faster.        
+        if self.caster:HasScepter() then
 
-        for i=#self.caster.tOldSpells,1,-1 do
-            local hSpell = self.caster.tOldSpells[i]
-            if hSpell:NumModifiersUsingAbility() == 0 and not hSpell:IsChanneling() then
-                hSpell:RemoveSelf()
-                table.remove(self.caster.tOldSpells,i)
+            -- Deleting old abilities
+            for i=#self.caster.tOldSpells,1,-1 do
+                local hSpell = self.caster.tOldSpells[i]
+                if hSpell:NumModifiersUsingAbility() == 0 and not hSpell:IsChanneling() then
+                    hSpell:RemoveSelf()
+                    table.remove(self.caster.tOldSpells,i)
+                end
             end
-        end
+
+            self:StartIntervalThink(0.2)
+        else
+            self:StartIntervalThink(20)
+        end        
     end
 end
 
@@ -95,7 +97,7 @@ function modifier_lua_antimage_spell_shield:GetAbsorbSpell( params )
                 local reflect_pfx = ParticleManager:CreateParticle("particles/units/heroes/hero_antimage/antimage_spellshield.vpcf", PATTACH_CUSTOMORIGIN_FOLLOW, self.caster)
                 ParticleManager:SetParticleControlEnt(reflect_pfx, 0, self.caster, PATTACH_POINT_FOLLOW, "attach_hitloc", self.caster:GetOrigin(), true)
                 ParticleManager:ReleaseParticleIndex(reflect_pfx)
-                return 1
+                return true
             end
         end
         return false  
