@@ -64,6 +64,10 @@ function modifier_lua_mystic_flare:OnCreated()
     self.damage = self.ability:GetSpecialValueFor("damage")
     self.damage_interval = self.ability:GetSpecialValueFor("damage_interval")
     self.duration = self.ability:GetSpecialValueFor("duration")
+   
+   -- Calculate damage done each instance
+   local num_instances = self.duration / self.damage_interval
+   self.damage_per_instance= self.damage / num_instances
 
     -- Apply particle effect
     self.core_particle_fx = ParticleManager:CreateParticle(self.core_particle, PATTACH_WORLDORIGIN, nil)        
@@ -94,7 +98,7 @@ function modifier_lua_mystic_flare:OnIntervalThink()
         -- Calculate damage for this instance for all enemies present
         local damage = 0 
         if #enemies > 0 then
-            damage = (self.damage / #enemies / self.duration * self.damage_interval)
+            damage = self.damage_per_instance / #enemies
         end
 
         -- Deal damage to each hero        
