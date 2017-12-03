@@ -1,6 +1,8 @@
 -- Author: Shush
 -- Date: 2/12/2017
 
+-- This adds a utility function for Skywrath Mage's scepter effects.
+-- Used by invoking the SkywrathSpellsTargetFinder function from it.
 require("heroes/skywrath_mage/skywrath_mage_target_finder")
 
 ----------------------------------------

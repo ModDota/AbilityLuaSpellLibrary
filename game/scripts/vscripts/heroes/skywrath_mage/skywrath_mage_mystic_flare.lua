@@ -1,6 +1,9 @@
 -- Author: Shush
 -- Date: 2/12/2017
 
+-- This adds a utility function for Skywrath Mage's scepter effects.
+-- Used by invoking the SkywrathSpellsPositionFinder function from it. 
+-- Note that this is a different function from the rest of the spells.
 require("heroes/skywrath_mage/skywrath_mage_target_finder")
 
 ------------------------------------
@@ -91,21 +94,19 @@ function modifier_lua_mystic_flare:OnIntervalThink()
         -- Calculate damage for this instance for all enemies present
         local damage = 0 
         if #enemies > 0 then
-            damage = self.damage / #enemies / self.duration * self.damage_interval
+            damage = (self.damage / #enemies / self.duration * self.damage_interval)
         end
 
         -- Deal damage to each hero        
-        for _,enemy in pairs (enemies) do
-            if not enemy:IsMagicImmune() then
-                local damageTable = {victim = enemy,
-                                     attacker = self.caster, 
-                                     damage = damage,
-                                     damage_type = DAMAGE_TYPE_MAGICAL,
-                                     ability = self.ability
-                                     }
-        
-                ApplyDamage(damageTable)  
-            end
+        for _,enemy in pairs (enemies) do            
+            local damageTable = {victim = enemy,
+                                 attacker = self.caster, 
+                                 damage = damage,
+                                 damage_type = DAMAGE_TYPE_MAGICAL,
+                                 ability = self.ability
+                                 }
+    
+            ApplyDamage(damageTable)              
         end
     end
 end
