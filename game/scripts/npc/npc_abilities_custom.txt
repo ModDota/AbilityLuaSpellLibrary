@@ -1,0 +1,9 @@
+#base "heroes/vengefulspirit.kv"
+#base "heroes/antimage.kv"
+#base "heroes/tusk.kv"
+#base "heroes/skywrath_mage.kv"
+
+"DOTAAbilities"
+{
+    "Version"   "1"
+}

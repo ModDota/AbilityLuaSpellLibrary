@@ -1,0 +1,501 @@
+///                                                           ///
+/// ModDota AbilityLuaSpellLibrary spells for Tusk ///
+///                                                           ///
+/// Numbers correct as at 7.07c                               ///
+///                                                           ///
+
+"DOTAAbilities"
+{
+  //=================================================================================================================
+  // Tusk: Ice Shards
+  //=================================================================================================================
+  "tusk_ice_shards_lua"
+  {
+
+    "BaseClass"                     "ability_lua"
+    "ScriptFile"                    "heroes/tusk/ice_shards.lua"
+    "AbilityTextureName"      "tusk_ice_shards"
+    // General
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityBehavior"       "DOTA_ABILITY_BEHAVIOR_DIRECTIONAL | DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+    "AbilityUnitTargetTeam"     "DOTA_UNIT_TARGET_TEAM_ENEMY"
+    "AbilityUnitTargetType"     "DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+    "AbilityUnitDamageType"     "DAMAGE_TYPE_MAGICAL" 
+    "SpellImmunityType"       "SPELL_IMMUNITY_ENEMIES_NO"
+    "FightRecapLevel"       "1"
+    "AbilitySound"          "Hero_Tusk.IceShards"
+
+    // Casting
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityCastRange"        "2000"
+    "AbilityCastPoint"        "0.1 0.1 0.1 0.1"
+
+    // Time   
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityCooldown"       "19.0 16.0 13.0 10.0"
+
+
+    // Cost
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityManaCost"       "100 105 110 115"
+
+    // Special
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilitySpecial"
+    {
+      "01"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "shard_width"       "200"
+      }
+      
+      "02"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "shard_damage"        "60 120 180 240"
+      }
+      "03"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "shard_count"       "7"
+      }
+      "04"
+      {
+        "var_type"          "FIELD_FLOAT"
+        "shard_speed"       "1200.0"
+      }
+      "05"
+      {
+        "var_type"          "FIELD_FLOAT"
+        "shard_duration"        "7.0"
+      }
+      "06"
+      {
+        "var_type"          "FIELD_FLOAT"
+        "shard_angle_step"      "40.0"
+      }
+      "07"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "shard_distance"      "200"
+      }
+      "08"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "cast_range_tooltip"      "1800"
+      }
+    }
+    "AbilityCastAnimation"    "ACT_DOTA_CAST_ABILITY_1"
+  }
+  
+  //=================================================================================================================
+  // Tusk: Snowball
+  //=================================================================================================================
+  "tusk_snowball_lua"
+  {
+    "BaseClass"                     "ability_lua"
+    "ScriptFile"                    "heroes/tusk/snowball.lua"
+    "AbilityTextureName"      "tusk_snowball"
+    // General
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityBehavior"       "DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+    "AbilityUnitTargetTeam"     "DOTA_UNIT_TARGET_TEAM_ENEMY"
+    "AbilityUnitTargetType"     "DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+    "AbilityUnitDamageType"     "DAMAGE_TYPE_MAGICAL" 
+    "SpellImmunityType"       "SPELL_IMMUNITY_ENEMIES_NO"
+    "SpellDispellableType"      "SPELL_DISPELLABLE_NO"
+    "FightRecapLevel"       "1"
+    "AbilitySound"          "Hero_Tusk.Snowball.Cast"
+
+    // Casting
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityCastRange"        "1250"
+    "AbilityCastPoint"        "0.1 0.1 0.1 0.1"
+
+    // Time   
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityCooldown"       "21 20 19 18"
+
+
+    // Cost
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityManaCost"       "75 75 75 75"
+
+    // Special
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilitySpecial"
+    {
+      "01"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "snowball_damage"     "80 120 160 200"
+        "LinkedSpecialBonus"    "special_bonus_unique_tusk_2_lua"
+      }
+      "02"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "snowball_speed"      "675"
+        "LinkedSpecialBonus"    "special_bonus_unique_tusk_3_lua"
+      }
+      "03"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "snowball_damage_bonus"   "20 30 40 50"
+      }
+      "04"
+      {
+        "var_type"          "FIELD_FLOAT"
+        "stun_duration"       "0.5 0.75 1.0 1.25"
+      }
+      "05"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "snowball_windup_radius"  "100"
+      }
+      "06"
+      {
+        "var_type"          "FIELD_FLOAT"
+        "snowball_duration"     "3.0"
+      }
+      "07"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "snowball_radius"     "200"
+      }     
+      "08"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "snowball_grow_rate"    "40"
+      }
+      "09"
+      {
+        "var_type"          "FIELD_FLOAT"
+        "snowball_windup"     "3.0"
+      }
+      "10"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "snowball_grab_radius"    "350"
+      }
+    }
+    "AbilityCastAnimation"    "ACT_DOTA_CAST_ABILITY_2"
+  }
+
+  //=================================================================================================================
+  // Tusk: Launch Snowball
+  //=================================================================================================================
+  "tusk_snowball_release_lua"
+  {
+    "BaseClass"                     "ability_lua"
+    "ScriptFile"                    "heroes/tusk/snowball.lua"
+    "AbilityTextureName"      "tusk_snowball"
+    // General
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityBehavior"       "DOTA_ABILITY_BEHAVIOR_HIDDEN | DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_NOT_LEARNABLE | DOTA_ABILITY_BEHAVIOR_IMMEDIATE | DOTA_ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE"
+    "AbilityTextureName"    "tusk_snowball"
+
+    // Casting
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityCastPoint"        "0.0 0.0 0.0 0.0"
+    "AbilityCastAnimation"      "ACT_INVALID"
+  }
+
+  //=================================================================================================================
+  // Tusk: Frozen Sigil
+  //=================================================================================================================
+  "tusk_frozen_sigil_lua"
+  {
+    "BaseClass"                     "ability_lua"
+    "ScriptFile"                    "heroes/tusk/frozen_sigil.lua"
+    "AbilityTextureName"      "tusk_frozen_sigil"
+    // General
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityBehavior"       "DOTA_ABILITY_BEHAVIOR_NO_TARGET"
+    "SpellImmunityType"       "SPELL_IMMUNITY_ENEMIES_NO"
+    "AbilitySound"          "Hero_Tusk.FrozenSigil"
+
+    // Casting
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityCastPoint"        "0.1 0.1 0.1 0.1"
+
+    // Time   
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityCooldown"       "50.0 50.0 50.0 50.0"
+
+    // Cost
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityManaCost"       "75 75 75 75"
+
+    // Special
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilitySpecial"
+    {
+      "01"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "sigil_radius"        "600"
+      }
+      "02"
+      {
+        "var_type"          "FIELD_FLOAT"
+        "sigil_duration"      "30.0"
+      }
+      "03"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "move_slow"         "10 15 20 25"
+      }
+      "04"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "attack_slow"       "30 40 50 60"
+      }
+
+    }
+    "AbilityCastAnimation"    "ACT_DOTA_CAST_ABILITY_3"
+  }
+
+  //=================================================================================================================
+  // Tusk: Walrus Punch
+  //=================================================================================================================
+  "tusk_walrus_punch_lua"
+  {
+    "BaseClass"                     "ability_lua"
+    "ScriptFile"                    "heroes/tusk/walrus_punch.lua"
+    "AbilityTextureName"      "tusk_walrus_punch"
+    // General
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityBehavior"       "DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_AUTOCAST | DOTA_ABILITY_BEHAVIOR_ATTACK"
+    "AbilityUnitTargetTeam"     "DOTA_UNIT_TARGET_TEAM_ENEMY"
+    "AbilityUnitTargetType"     "DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+    "AbilityUnitTargetFlags"    "DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
+    "SpellImmunityType"       "SPELL_IMMUNITY_ENEMIES_YES"
+    "SpellDispellableType"      "SPELL_DISPELLABLE_YES"
+    "AbilityType"         "DOTA_ABILITY_TYPE_ULTIMATE"
+    "FightRecapLevel"       "1"
+    "AbilitySound"          "Hero_Tusk.WalrusPunch.Target"
+
+    // Casting
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityCastPoint"        "0"
+    "AbilityCastRange"        "150"
+    "AbilityCastAnimation"      "ACT_DOTA_CAST_ABILITY_4"
+
+    // Time   
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityCooldown"       "36 24 12"
+
+    // Cost
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityManaCost"       "50 75 100"
+
+    // Special
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilitySpecial"
+    {
+      "01"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "crit_multiplier"     "350"
+        "LinkedSpecialBonus"    "special_bonus_unique_tusk_lua"
+      }
+      "02"
+      {
+        "var_type"          "FIELD_FLOAT"
+        "air_time"          "1.0"
+      }
+      "03"
+      {
+        "var_type"          "FIELD_FLOAT"
+        "slow_duration"       "2.0 3.0 4.0"
+      }
+      "04"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "move_slow"         "40"
+      }
+      "05"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "push_length"       "1000"
+      }
+    }
+  }
+
+  //=================================================================================================================
+  // Tusk: Walrus Kick
+  //=================================================================================================================
+  "tusk_walrus_kick_lua"
+  {
+    "BaseClass"                     "ability_lua"
+    "ScriptFile"                    "heroes/tusk/walrus_kick.lua"
+    "AbilityTextureName"      "tusk_walrus_kick"
+    // General
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityBehavior"       "DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_HIDDEN"
+    "AbilityUnitTargetTeam"     "DOTA_UNIT_TARGET_TEAM_ENEMY"
+    "AbilityUnitTargetType"     "DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+    "AbilityUnitTargetFlags"    "DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
+    "AbilityUnitDamageType"     "DAMAGE_TYPE_MAGICAL"
+    "SpellImmunityType"       "SPELL_IMMUNITY_ENEMIES_YES"
+    "SpellDispellableType"      "SPELL_DISPELLABLE_YES"
+    "MaxLevel"            "1"
+    "FightRecapLevel"       "1"
+    "IsGrantedByScepter"      "1"
+    "HasScepterUpgrade"     "1"
+    "AbilitySound"          "Hero_Tusk.WalrusKick.Target"
+
+    // Casting
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityCastPoint"        "0.2"
+    "AbilityCastRange"        "150"
+    "AbilityCastAnimation"      "ACT_DOTA_CAST_ABILITY_5"
+
+    // Time   
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityCooldown"       "8"
+
+    // Cost
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilityManaCost"       "100"
+
+    // Special
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilitySpecial"
+    {
+      "01"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "crit_multiplier"     "0.0"
+      }
+      "02"
+      {
+        "var_type"          "FIELD_FLOAT"
+        "air_time"          "1.0"
+      }
+      "03"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "push_length"       "1400"
+      }     
+      "04"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "move_slow"         "40"
+      }
+      "05"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "slow_duration"       "4"
+      }     
+      "06"
+      {
+        "var_type"          "FIELD_FLOAT"
+        "cooldown_scepter"      "8"
+      }
+      "07"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "damage"          "350"
+      }
+    }
+  }
+  "special_bonus_unique_tusk_lua" // 
+  {
+    // General
+    //-------------------------------------------------------------------------------------------------------------
+    "BaseClass"           "special_bonus_unique_centaur_2" // Doesn't matter!
+    "AbilityType"         "DOTA_ABILITY_TYPE_ATTRIBUTES"
+    "AbilityBehavior"       "DOTA_ABILITY_BEHAVIOR_PASSIVE"
+
+    // Special
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilitySpecial"
+    {
+      "01"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "value"       "100"
+      }
+    }
+  }
+
+  "special_bonus_unique_tusk_2_lua" // 
+  {
+    // General
+    //-------------------------------------------------------------------------------------------------------------
+    "BaseClass"           "special_bonus_unique_centaur_2" // Doesn't matter!
+    "AbilityType"         "DOTA_ABILITY_TYPE_ATTRIBUTES"
+    "AbilityBehavior"       "DOTA_ABILITY_BEHAVIOR_PASSIVE"
+
+    // Special
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilitySpecial"
+    {
+      "01"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "value"       "150"
+      }
+    }
+  }
+  "special_bonus_unique_tusk_3_lua" // 
+  {
+    // General
+    //-------------------------------------------------------------------------------------------------------------
+    "BaseClass"           "special_bonus_unique_centaur_2" // Doesn't matter!
+    "AbilityType"         "DOTA_ABILITY_TYPE_ATTRIBUTES"
+    "AbilityBehavior"       "DOTA_ABILITY_BEHAVIOR_PASSIVE"
+
+    // Special
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilitySpecial"
+    {
+      "01"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "value"       "300"
+      }
+    }
+  }
+  "special_bonus_unique_tusk_4_lua" // 
+  {
+    // General
+    //-------------------------------------------------------------------------------------------------------------
+    "BaseClass"           "special_bonus_unique_centaur_2" // Doesn't matter!
+    "AbilityType"         "DOTA_ABILITY_TYPE_ATTRIBUTES"
+    "AbilityBehavior"       "DOTA_ABILITY_BEHAVIOR_PASSIVE"
+
+
+    // Special
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilitySpecial"
+    {
+      "01"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "value"       "12"
+      }
+    }
+  }
+  "special_bonus_unique_tusk_5_lua" // 
+  {
+    // General
+    //-------------------------------------------------------------------------------------------------------------
+    "BaseClass"           "special_bonus_unique_centaur_2" // Doesn't matter!
+    "AbilityType"         "DOTA_ABILITY_TYPE_ATTRIBUTES"
+    "AbilityBehavior"       "DOTA_ABILITY_BEHAVIOR_PASSIVE"
+
+
+    // Special
+    //-------------------------------------------------------------------------------------------------------------
+    "AbilitySpecial"
+    {
+      "01"
+      {
+        "var_type"          "FIELD_INTEGER"
+        "value"       "6"
+      }
+    }
+  }
+}

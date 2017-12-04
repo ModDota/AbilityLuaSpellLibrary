@@ -1,0 +1,265 @@
+///                                                           ///
+/// ModDota AbilityLuaSpellLibrary spells for Vengeful Spirit ///
+///                                                           ///
+/// Numbers correct as at 7.07c                               ///
+///                                                           ///
+
+"DOTAAbilities"
+{
+    //=================================================================================================================
+    // Ability: Vengefulspirit Magic Missle
+    //=================================================================================================================
+    "vengefulspirit_magic_missile_lua"
+    {
+        "BaseClass"                     "ability_lua"
+        "ScriptFile"                    "heroes/vengefulspirit/magic_missle.lua"
+        "AbilityTextureName"			"vengefulspirit_magic_missile"
+        
+        // General
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+        "AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+        "AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+        "AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+        "SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+        "SpellDispellableType"			"SPELL_DISPELLABLE_YES_STRONG"
+        "FightRecapLevel"				"1"
+        "AbilitySound"					"Hero_VengefulSpirit.MagicMissile"
+
+        // Casting
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCastRange"				"500"
+        "AbilityCastPoint"				"0.3 0.3 0.3 0.3"
+        
+        // Time		
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCooldown"				"13 12 11 10"
+
+        // Cost
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityManaCost"				"110 120 130 140"
+
+        // Special
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "magic_missile_speed"	"1250"
+            }
+            "02"
+            {
+                "var_type"				"FIELD_FLOAT"
+                "magic_missile_stun"	"1.2 1.4 1.6 1.8"
+            }
+            "03"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "magic_missile_damage"	"100 175 250 325"
+                "LinkedSpecialBonus"	"special_bonus_unique_vengeful_spirit_1"
+            }
+        }
+        "AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_1"
+    }
+
+    //=================================================================================================================
+    // Ability: Vengefulspirit Command Aura
+    //=================================================================================================================
+    "vengefulspirit_command_aura_lua"
+    {
+        "BaseClass"                     "ability_lua"
+        "ScriptFile"                    "heroes/vengefulspirit/command_aura.lua"
+        "AbilityTextureName"			"vengefulspirit_command_aura"
+        
+        // General
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_AURA"
+        "AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+        
+        
+        // Casting
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCastRange"				"1200"
+        
+        // Special
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"			"FIELD_INTEGER"
+                "bonus_damage_pct"	"12 18 24 30"
+                "LinkedSpecialBonus"	"special_bonus_unique_vengeful_spirit_2"
+            }
+            "02"
+            {
+                "var_type"			"FIELD_INTEGER"
+                "aura_radius"		"1200"
+            }			
+            "03"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "images_do_damage_percent"	"0"
+            }
+            "04"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "images_do_damage_percent_tooltip"			"100"
+            }	
+            "05"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "images_take_damage_percent"	"100"
+            }
+            "06"
+            {
+                "var_type"				"FIELD_INTEGER"
+                "images_take_damage_percent_tooltip"			"200"
+            }		
+            "07"
+            {
+                "var_type"				"FIELD_FLOAT"
+                "illusion_duration"			"6"
+            }		
+        }
+        "AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_3"
+    }
+    
+    //=================================================================================================================
+    // Ability: Vengefulspirit Wave of Terror
+    //=================================================================================================================
+    "vengefulspirit_wave_of_terror_lua"
+    {
+        "BaseClass"                     "ability_lua"
+        "ScriptFile"                    "heroes/vengefulspirit/wave_of_terror.lua"
+        "AbilityTextureName"			"vengefulspirit_wave_of_terror"
+
+        // General
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_POINT"
+        "AbilityUnitDamageType"			"DAMAGE_TYPE_MAGICAL"	
+        "SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
+        "SpellDispellableType"			"SPELL_DISPELLABLE_YES"
+        "AbilitySound"					"Hero_VengefulSpirit.WaveOfTerror"
+
+        // Casting
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCastRange"				"1400"
+        "AbilityCastPoint"				"0.3 0.3 0.3 0.3"
+
+        // Time		
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCooldown"				"10"
+        "AbilityDuration"				"8"
+
+        // Damage.
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityDamage"					"45 70 95 120"
+
+        // Cost
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityManaCost"				"40 40 40 40"
+
+        // Special
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"			"FIELD_FLOAT"
+                "wave_speed"		"2000.0"
+            }
+            "02"
+            {
+                "var_type"			"FIELD_INTEGER"
+                "wave_width"		"300"
+            }
+            "03"
+            {
+                "var_type"			"FIELD_INTEGER"
+                "armor_reduction"	"-3 -4 -5 -6"
+                "LinkedSpecialBonus"	"special_bonus_unique_vengeful_spirit_4"
+            }
+            "04"
+            {
+                "var_type"			"FIELD_FLOAT"
+                "tooltip_duration"	"8"
+            }
+            "05"
+            {
+                "var_type"			"FIELD_FLOAT"
+                "vision_aoe"		"300"
+            }
+            "06"
+            {
+                "var_type"			"FIELD_FLOAT"
+                "vision_duration"	"3.0 3.0 3.0 3.0"
+            }
+            
+        }
+        "AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_2"
+    }
+
+    //=================================================================================================================
+    // Ability: Vengefulspirit Nether Swap
+    //=================================================================================================================
+    "vengefulspirit_nether_swap_lua"
+    {
+        "BaseClass"                     "ability_lua"
+        "ScriptFile"                    "heroes/vengefulspirit/nether_swap.lua"
+        "AbilityTextureName"			"vengefulspirit_nether_swap"
+
+        // General
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityType"					"DOTA_ABILITY_TYPE_ULTIMATE"
+        "AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+        "AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_CUSTOM"
+        "AbilityUnitTargetType"			"DOTA_UNIT_TARGET_CUSTOM"
+        "SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
+        "FightRecapLevel"				"2"
+        "AbilitySound"					"Hero_VengefulSpirit.NetherSwap"
+
+        "HasScepterUpgrade"			"1"
+
+        // Casting
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCastRange"				"700 950 1200"
+        "AbilityCastPoint"				"0.3 0.3 0.3"
+        "AbilityCastAnimation"		"ACT_DOTA_CAST_ABILITY_4"
+        
+        // Time		
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCooldown"				"45.0"
+
+        // Cost
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityManaCost"				"100 150 200"
+        
+        // Special
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"						"FIELD_INTEGER"
+                "tooltip_range"					"700 950 1200"
+            }
+            "02"
+            {
+                "var_type"						"FIELD_FLOAT"
+                "nether_swap_cooldown_scepter"	"10"
+            }
+            "03"
+            {
+                "var_type"						"FIELD_FLOAT"
+                "illusion_damage_out_pct_scepter"	"100"
+            }
+            "04"
+            {
+                "var_type"						"FIELD_INTEGER"
+                "illusion_damage_in_pct_scepter"	"150"
+            }			
+        }
+    }
+}
