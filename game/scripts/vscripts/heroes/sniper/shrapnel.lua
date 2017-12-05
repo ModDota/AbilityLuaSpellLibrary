@@ -55,7 +55,7 @@ function modifier_sniper_shrapnel_lua_aura:OnCreated()
         -- Ability specials
         self.radius = self:GetAbility():GetSpecialValueFor("radius")
 
-        -- Add shrapnel particl effect
+        -- Add shrapnel particle effect
         self.particle = ParticleManager:CreateParticle("particles/units/heroes/hero_sniper/sniper_shrapnel.vpcf", PATTACH_WORLDORIGIN, nil)
         ParticleManager:SetParticleControl(self.particle, 0, self:GetParent():GetAbsOrigin())
         ParticleManager:SetParticleControl(self.particle, 1, Vector(self.radius, self.radius, 0))
@@ -106,6 +106,7 @@ function modifier_sniper_shrapnel_lua_aura_modifier:OnIntervalThink()
         damage = self.damage,
         damage_type = DAMAGE_TYPE_MAGICAL,
     }
+    ApplyDamage(damageTable)
 end
 ---@override
 function modifier_sniper_shrapnel_lua_aura_modifier:DeclareFunctions()

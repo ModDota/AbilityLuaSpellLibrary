@@ -1,31 +1,31 @@
 LinkLuaModifier("modifier_sniper_assassinate_caster_lua","heroes/sniper/assassinate.lua",LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_sniper_assassinate_target_lua","heroes/sniper/assassinate.lua",LUA_MODIFIER_MOTION_NONE)
 
--- The spell is almost completely different with and without Aghanims Scepter. The order is always normal then scepter
+-- The spell is almost completely different with and without Aghanims Scepter.
 ---@class sniper_assassinate_lua : CDOTA_Ability_Lua
 sniper_assassinate_lua = class({})
 ---@override
 function sniper_assassinate_lua:GetBehavior()
-    if not self:GetCaster():HasScepter() then
-        return DOTA_ABILITY_BEHAVIOR_UNIT_TARGET
-    else
+    if self:GetCaster():HasScepter() then
         return DOTA_ABILITY_BEHAVIOR_POINT + DOTA_ABILITY_BEHAVIOR_AOE
+    else -- Normal (non-scepter)
+        return DOTA_ABILITY_BEHAVIOR_UNIT_TARGET
     end
 end
 ---@override
 function sniper_assassinate_lua:GetAbilityDamageType()
-    if not self:GetCaster():HasScepter() then
-        return DAMAGE_TYPE_MAGICAL
-    else
+    if self:GetCaster():HasScepter() then
         return DAMAGE_TYPE_PHYSICAL
+    else -- Normal (non-scepter)
+        return DAMAGE_TYPE_MAGICAL
     end
 end
 ---@override
 function sniper_assassinate_lua:GetAOERadius()
-    if not self:GetCaster():HasScepter() then
-        return 0
-    else
+    if self:GetCaster():HasScepter() then
         return self:GetSpecialValueFor("scepter_radius")
+    else -- Normal (non-scepter)
+        return 0
     end
 end
 
@@ -45,15 +45,15 @@ function sniper_assassinate_lua:OnAbilityPhaseStart(keys)
     caster:EmitSound("Ability.AssassinateLoad")
     -- Store the target(s) in self.storedTarget, apply a modifier that reveals them
     self.storedTarget = {}
-    if not caster:HasScepter() then
-        self.storedTarget[1] = self:GetCursorTarget()
-        self.storedTarget[1]:AddNewModifier(caster,self,"modifier_sniper_assassinate_target_lua",{}) -- Make this
-    else
+    if caster:HasScepter() then
         local point = self:GetCursorPosition()
         self.storedTarget = FindUnitsInRadius(caster:GetTeamNumber(),point,caster,self:GetSpecialValueFor("scepter_radius"), DOTA_UNIT_TARGET_TEAM_ENEMY, DOTA_UNIT_TARGET_HERO, DOTA_UNIT_TARGET_FLAG_NO_INVIS, FIND_CLOSEST, false)
         for k,v in pairs(self.storedTarget) do
             v:AddNewModifier(caster,self,"modifier_sniper_assassinate_target_lua",{})
         end
+    else -- Normal (non-scepter)
+        self.storedTarget[1] = self:GetCursorTarget()
+        self.storedTarget[1]:AddNewModifier(caster,self,"modifier_sniper_assassinate_target_lua",{}) -- Make this
 
     end
     return true
@@ -67,7 +67,7 @@ function sniper_assassinate_lua:OnAbilityPhaseInterrupted()
         end
     end
     self.storedTarget = nil
-    self:GetCaster():RemoveModifierByName("modifier_sniper_assassinate_caster_lua")
+    self:GetCaster():RemoveModifierByNameAndCaster("modifier_sniper_assassinate_caster_lua",self:GetCaster())
 end
 ---@override
 function sniper_assassinate_lua:OnSpellStart(keys)
@@ -109,7 +109,12 @@ function sniper_assassinate_lua:OnProjectileHit(hTarget,vLocation)
 
     target:EmitSound("Hero_Sniper.AssassinateDamage")
 
-    if not caster:HasScepter() then
+    if caster:HasScepter() then
+        -- Quickly create and remove the crit modifier
+        caster:AddNewModifier(caster,self,"modifier_sniper_assassinate_caster_lua",{})
+        caster:PerformAttack(target,true,true,true,true,false, false, true)
+        caster:RemoveModifierByName("modifier_sniper_assassinate_caster_lua")
+    else -- Normal (non-scepter)
         local damageTable = {
             victim = target,
             attacker = caster,
@@ -117,11 +122,6 @@ function sniper_assassinate_lua:OnProjectileHit(hTarget,vLocation)
             damage_type = self:GetAbilityDamageType(),
         }
         ApplyDamage(damageTable)
-    else
-        -- Quickly create and remove the crit modifier
-        caster:AddNewModifier(caster,self,"modifier_sniper_assassinate_caster_lua",{})
-        caster:PerformAttack(target,true,true,true,true,false, false, true)
-        caster:RemoveModifierByName("modifier_sniper_assassinate_caster_lua")
     end
     -- Remove the crosshair+vision
     target:RemoveModifierByName("modifier_sniper_assassinate_target_lua")
