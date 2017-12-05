@@ -21,11 +21,14 @@ function sniper_shrapnel_lua:OnSpellStart()
     local caster = self:GetCaster()
     local point = self:GetCursorPosition()
     local duration = self:GetSpecialValueFor("duration")
+    local radius = self:GetSpecialValueFor("radius")
     local talent = caster:FindAbilityByName("special_bonus_unique_sniper_2")
     if talent and talent:GetLevel() ~= 0 then
         self:GetIntrinsicModifierHandle().max_charges = self:GetSpecialValueFor("max_charges") + talent:GetSpecialValueFor("value")
     end
 
+    self:CreateVisibilityNode(point,radius,duration)
+    
     local particle = ParticleManager:CreateParticle("particles/units/heroes/hero_sniper/sniper_shrapnel_launch.vpcf", PATTACH_CUSTOMORIGIN_FOLLOW, caster)
     ParticleManager:SetParticleControlEnt(particle, 0, caster, PATTACH_POINT_FOLLOW, "attach_attack1", caster:GetAbsOrigin(), true)
     ParticleManager:SetParticleControl(particle, 1, point+Vector(0,0,1000))
