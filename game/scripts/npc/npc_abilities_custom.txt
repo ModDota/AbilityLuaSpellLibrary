@@ -2,8 +2,13 @@
 #base "heroes/antimage.kv"
 #base "heroes/tusk.kv"
 #base "heroes/skywrath_mage.kv"
-
+#base "heroes/sniper.kv"
 "DOTAAbilities"
 {
     "Version"   "1"
+    "base_ability_charges"
+    {
+        "BaseClass"                 "ability_lua"
+        "ScriptFile"            "heroes/util/base_ability_charges.lua"
+    }
 }
