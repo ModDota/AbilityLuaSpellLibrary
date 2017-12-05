@@ -27,7 +27,7 @@ function modifier_sniper_headshot_passive:GetModifierProcAttack_BonusDamage_Phys
         if target:IsBuilding() or target:IsOther() then return 0 end
         if RollPercentage(ability:GetSpecialValueFor("proc_chance")) then
             target:AddNewModifier(caster,self:GetAbility(),"modifier_sniper_headshot_enemies",{ duration = ability:GetSpecialValueFor("slow_duration")})
-            local talent = caster:FindAbilityByName("special_bonus_unique_sniper_3_lua")
+            local talent = caster:FindAbilityByName("special_bonus_unique_sniper_3")
             if talent and talent:GetLevel() > 0 then
                 local knockback_dist = talent:GetSpecialValueFor("value")
                 local knockback =	{

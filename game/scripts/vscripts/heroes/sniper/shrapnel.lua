@@ -28,7 +28,7 @@ function sniper_shrapnel_lua:OnSpellStart()
     end
 
     self:CreateVisibilityNode(point,radius,duration)
-    
+
     local particle = ParticleManager:CreateParticle("particles/units/heroes/hero_sniper/sniper_shrapnel_launch.vpcf", PATTACH_CUSTOMORIGIN_FOLLOW, caster)
     ParticleManager:SetParticleControlEnt(particle, 0, caster, PATTACH_POINT_FOLLOW, "attach_attack1", caster:GetAbsOrigin(), true)
     ParticleManager:SetParticleControl(particle, 1, point+Vector(0,0,1000))
