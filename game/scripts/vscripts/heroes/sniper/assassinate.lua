@@ -1,6 +1,7 @@
 LinkLuaModifier("modifier_sniper_assassinate_caster_lua","heroes/sniper/assassinate.lua",LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_sniper_assassinate_target_lua","heroes/sniper/assassinate.lua",LUA_MODIFIER_MOTION_NONE)
 
+-- The spell is almost completely different with and without Aghanims Scepter. The order is always normal then scepter
 ---@class sniper_assassinate_lua : CDOTA_Ability_Lua
 sniper_assassinate_lua = class({})
 ---@override
@@ -29,23 +30,11 @@ function sniper_assassinate_lua:GetAOERadius()
 end
 
 ---@override
-function sniper_assassinate_lua:ProcsMagicStick()
-    return true
-end
----@override
 function sniper_assassinate_lua:GetCastPoint()
-    local time = self.BaseClass.GetCastPoint()
+    local time = self.BaseClass.GetCastPoint(self)
     local talent = self:GetCaster():FindAbilityByName("special_bonus_unique_sniper_4")
     if talent  then
         time = time - talent:GetSpecialValueFor("value")
-    end
-    return time
-end
----@override
-function sniper_assassinate_lua:GetBackswingTime()
-    local time = 1.37
-    if talent then
-        time = time + talent:GetSpecialValueFor("value")
     end
     return time
 end
@@ -54,8 +43,8 @@ end
 function sniper_assassinate_lua:OnAbilityPhaseStart(keys)
     local caster = self:GetCaster()
     caster:EmitSound("Ability.AssassinateLoad")
+    -- Store the target(s) in self.storedTarget, apply a modifier that reveals them
     self.storedTarget = {}
-    caster:AddNewModifier(caster,self,"modifier_sniper_assassinate_caster_lua",{})
     if not caster:HasScepter() then
         self.storedTarget[1] = self:GetCursorTarget()
         self.storedTarget[1]:AddNewModifier(caster,self,"modifier_sniper_assassinate_target_lua",{}) -- Make this
@@ -65,11 +54,13 @@ function sniper_assassinate_lua:OnAbilityPhaseStart(keys)
         for k,v in pairs(self.storedTarget) do
             v:AddNewModifier(caster,self,"modifier_sniper_assassinate_target_lua",{})
         end
+
     end
     return true
 end
 ---@override
 function sniper_assassinate_lua:OnAbilityPhaseInterrupted()
+    -- Remove the crosshairs from the target(s), and remove the modifier from the caster
     if self.storedTarget then
         for k,v in pairs(self.storedTarget) do
             v:RemoveModifierByName("modifier_sniper_assassinate_target_lua")
@@ -82,9 +73,10 @@ end
 function sniper_assassinate_lua:OnSpellStart(keys)
     self:GetCaster():EmitSound("Ability.Assassinate")
 
-    if not self.storedTarget then
+    if not self.storedTarget then -- Should never happen, but to prevent errors we return here
         return
     end
+    -- Because we stored the targets in a table, it is easy to fire a projectile at all of them
     for k,v in pairs(self.storedTarget) do
         local projTable = {
             EffectName = "particles/units/heroes/hero_sniper/sniper_assassinate.vpcf",
@@ -105,13 +97,10 @@ end
 ---@override
 function sniper_assassinate_lua:OnProjectileHit(hTarget,vLocation)
     local caster = self:GetCaster()
-
     local target = hTarget
 
-    if not target then
-        return true
-    end
 
+    -- Linkens dodge
     if not self:GetCaster():HasScepter() then
         if target:TriggerSpellAbsorb(self) then
             return true
@@ -119,8 +108,8 @@ function sniper_assassinate_lua:OnProjectileHit(hTarget,vLocation)
     end
 
     target:EmitSound("Hero_Sniper.AssassinateDamage")
+
     if not caster:HasScepter() then
-        --print(self:GetSpecialValueFor("damage"))
         local damageTable = {
             victim = target,
             attacker = caster,
@@ -129,8 +118,12 @@ function sniper_assassinate_lua:OnProjectileHit(hTarget,vLocation)
         }
         ApplyDamage(damageTable)
     else
+        -- Quickly create and remove the crit modifier
+        caster:AddNewModifier(caster,self,"modifier_sniper_assassinate_caster_lua",{})
         caster:PerformAttack(target,true,true,true,true,false, false, true)
+        caster:RemoveModifierByName("modifier_sniper_assassinate_caster_lua")
     end
+    -- Remove the crosshair+vision
     target:RemoveModifierByName("modifier_sniper_assassinate_target_lua")
 
     self.storedTarget[target] = nil
@@ -139,12 +132,9 @@ function sniper_assassinate_lua:OnProjectileHit(hTarget,vLocation)
             self.storedTarget[k] = nil
         end
     end
-    if #self.storedTarget == 0 then
-        caster:RemoveModifierByName("modifier_sniper_assassinate_caster_lua")
-    end
     return true
 end
-
+-- Marks the target(s) and provides vision for them
 ---@class modifier_sniper_assassinate_target_lua : CDOTA_Modifier_Lua
 modifier_sniper_assassinate_target_lua = class({})
 ---@override
@@ -190,7 +180,7 @@ function modifier_sniper_assassinate_target_lua:OnCreated()
         self:StartIntervalThink(FrameTime())
     end
 end
-
+-- This modifier provides the crit
 ---@class modifier_sniper_assassinate_caster_lua : CDOTA_Modifier_Lua
 modifier_sniper_assassinate_caster_lua = class({})
 ---@override

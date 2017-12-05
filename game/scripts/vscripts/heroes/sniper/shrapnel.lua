@@ -26,7 +26,7 @@ function sniper_shrapnel_lua:OnSpellStart()
     if talent and talent:GetLevel() ~= 0 then
         self:GetIntrinsicModifierHandle().max_charges = self:GetSpecialValueFor("max_charges") + talent:GetSpecialValueFor("value")
     end
-
+    -- Provide vision
     self:CreateVisibilityNode(point,radius,duration)
 
     local particle = ParticleManager:CreateParticle("particles/units/heroes/hero_sniper/sniper_shrapnel_launch.vpcf", PATTACH_CUSTOMORIGIN_FOLLOW, caster)
@@ -36,6 +36,7 @@ function sniper_shrapnel_lua:OnSpellStart()
 
     caster:EmitSound("Hero_Sniper.ShrapnelShoot")
 
+    --Delay the effect
     self:SetContextThink("shrapnel_delay",function()
         CreateModifierThinker(caster,self,"modifier_sniper_shrapnel_lua_aura",{duration = duration},point,caster:GetTeamNumber(),false)
 
