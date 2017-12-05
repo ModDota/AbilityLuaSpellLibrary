@@ -1,4 +1,4 @@
-LinkLuaModifier("modifier_sniper_take_aim","heroes/sniper/take_aim.lua",LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_sniper_take_aim_lua","heroes/sniper/take_aim.lua",LUA_MODIFIER_MOTION_NONE)
 
 ---@class sniper_take_aim_lua : CDOTA_Ability_Lua
 sniper_take_aim_lua = class({})
