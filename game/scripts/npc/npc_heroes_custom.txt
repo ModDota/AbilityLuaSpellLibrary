@@ -92,9 +92,9 @@
     }
     // Sniper values last updated:7.07c
 
-    "npc_dota_hero_sniper"
+    "npc_dota_hero_sniper_lua"
     {
-        "override_hero"         "npc_dota_hero_skywrath_mage"
+        "override_hero"         "npc_dota_hero_sniper"
 
         "Ability1"      "sniper_shrapnel_lua"
         "Ability2"      "sniper_take_aim_lua"
