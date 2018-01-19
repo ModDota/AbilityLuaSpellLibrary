@@ -1,0 +1,223 @@
+///                                                           ///
+/// ModDota AbilityLuaSpellLibrary spells for Meepo   ///
+///                                                           ///
+/// Last Update: 7.07c                                        ///
+///                                                           ///
+
+"DOTAAbilities"
+{
+    //=================================================================================================================
+    // Meepo: Earthbind
+    //=================================================================================================================
+    "meepo_earthbind_lua"
+    {
+        // General
+        //-------------------------------------------------------------------------------------------------------------
+        "BaseClass"                     "ability_lua"
+        "ScriptFile"                    "heroes/meepo/earthbind.lua"
+        "AbilityTextureName"            "meepo_earthbind"
+        "AbilityBehavior"               "DOTA_ABILITY_BEHAVIOR_AOE | DOTA_ABILITY_BEHAVIOR_POINT | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING"
+        "SpellImmunityType"             "SPELL_IMMUNITY_ENEMIES_NO"
+        "SpellDispellableType"          "SPELL_DISPELLABLE_YES"
+        "FightRecapLevel"               "1"
+        "AbilitySound"                  "Hero_Meepo.Earthbind.Cast"
+        
+
+        // Casting
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCastRange"              "500 750 1000 1250"
+        "AbilityCastPoint"              "0.3"
+        
+        // Time     
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCooldown"               "20 16 12 8"
+
+        // Cost
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityManaCost"               "100"
+
+        // Special
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"              "FIELD_FLOAT"
+                "duration"              "2.0"
+            }
+            "02"
+            {
+                "var_type"              "FIELD_INTEGER"
+                "radius"                "220"
+            }
+            "03"
+            {
+                "var_type"              "FIELD_INTEGER"
+                "speed"                 "857"
+            }
+            "04"
+            {
+                "var_type"              "FIELD_INTEGER"
+                "tooltip_range"         "500 750 1000 1250"
+            }
+            // Adding cooldown and praying this gets synced
+            "05"
+            {
+                "var_type"              "FIELD_FLOAT"
+                "cooldown"              "20 16 12 8"
+                "LinkedSpecialBonus"    "special_bonus_unique_meepo3"
+            }
+
+        }
+        "AbilityCastAnimation"      "ACT_DOTA_CAST_ABILITY_1"
+    }
+
+    //=================================================================================================================
+    // Meepo: Poof
+    //=================================================================================================================
+    "meepo_poof_lua"
+    {
+        // General
+        //-------------------------------------------------------------------------------------------------------------
+        "BaseClass"                     "ability_lua"
+        "ScriptFile"                    "heroes/meepo/poof.lua"
+        "AbilityTextureName"            "meepo_poof"
+        "AbilityBehavior"               "DOTA_ABILITY_BEHAVIOR_POINT | | DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_NORMAL_WHEN_STOLEN | DOTA_ABILITY_BEHAVIOR_IGNORE_BACKSWING | DOTA_ABILITY_BEHAVIOR_ROOT_DISABLES"
+        "AbilityUnitTargetTeam"         "DOTA_UNIT_TARGET_TEAM_FRIENDLY"
+        "AbilityUnitTargetType"         "DOTA_UNIT_TARGET_HERO"
+        "AbilityUnitDamageType"         "DAMAGE_TYPE_MAGICAL"
+        "SpellImmunityType"             "SPELL_IMMUNITY_ENEMIES_NO"
+        "FightRecapLevel"               "1"
+        "AbilitySound"                  "Hero_Meepo.Poof"
+
+        // Casting
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCastPoint"              "1.5"
+        "AbilityChannelTime"            "0.0"
+        
+        // Time     
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityCooldown"               "12 10 8 6"
+
+        // Cost
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityManaCost"               "80"
+
+        // Special
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"              "FIELD_INTEGER"
+                "radius"                "375"
+            }
+            "02"
+            {
+                "var_type"                  "FIELD_INTEGER"
+                "poof_damage"               "80 100 120 140"
+                "LinkedSpecialBonus"        "special_bonus_unique_meepo_2"
+            }
+            "03"
+            {
+                "var_type"                  "FIELD_INTEGER"
+                "cooldown"                "12 10 8 6"
+                "LinkedSpecialBonus"        "special_bonus_unique_meepo"
+            }
+        }
+        "AbilityCastAnimation"      "ACT_DOTA_CAST_ABILITY_2"
+    }
+
+    //=================================================================================================================
+    // Meepo: Geostrike
+    //=================================================================================================================
+    "meepo_geostrike_lua"
+    {
+        // General
+        //-------------------------------------------------------------------------------------------------------------
+        "BaseClass"                     "ability_lua"
+        "ScriptFile"                    "heroes/meepo/geostrike.lua"
+        "AbilityTextureName"            "meepo_geostrike"
+        "AbilityBehavior"               "DOTA_ABILITY_BEHAVIOR_PASSIVE"
+        "SpellImmunityType"             "SPELL_IMMUNITY_ENEMIES_YES"
+        "SpellDispellableType"          "SPELL_DISPELLABLE_YES"
+        "AbilitySound"                  "Hero_Meepo.Geostrike"
+
+        "AbilityDamage"                 "10 20 30 40"
+
+        "AbilityDuration"               "2"
+
+        // Stats
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilityModifierSupportBonus"   "5"
+
+        // Special
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"              "FIELD_INTEGER"
+                "slow"                  "-5 -10 -15 -20"
+            }
+            "02"
+            {
+                "var_type"              "FIELD_FLOAT"
+                "duration_tooltip"      "2.0"
+            }
+        }
+        "AbilityCastAnimation"      "ACT_DOTA_CAST_ABILITY_3"
+    }
+    
+    //=================================================================================================================
+    // Meepo: Divided We Stand
+    //=================================================================================================================
+    "meepo_divided_we_stand_lua"
+    {
+        // General
+        //-------------------------------------------------------------------------------------------------------------
+        "BaseClass"                     "ability_lua"
+        "ScriptFile"                    "heroes/meepo/divided_we_stand.lua"
+        "AbilityTextureName"            "meepo_divided_we_stand"                                                     // unique ID number for this ability.  Do not change this once established or it will invalidate collected stats.
+        "AbilityBehavior"               "DOTA_ABILITY_BEHAVIOR_PASSIVE"
+        "AbilityType"                   "DOTA_ABILITY_TYPE_ULTIMATE"
+        "DisplayAdditionalHeroes"   "1"
+        "LevelsBetweenUpgrades"     "7"
+        "RequiredLevel"         "3"
+        "AbilityCastAnimation"          "ACT_DOTA_CAST_ABILITY_4"
+
+        "HasScepterUpgrade"         "1"
+            
+        // Special
+        //-------------------------------------------------------------------------------------------------------------
+        "AbilitySpecial"
+        {
+            "01"
+            {
+                "var_type"              "FIELD_INTEGER"
+                "tooltip_clones"        "1 2 3"
+            }
+            "02"
+            {
+                "var_type"              "FIELD_INTEGER"
+                "tooltip_share_percentage"      "20"
+            }
+            "03"
+            {
+                "var_type"              "FIELD_INTEGER"
+                "tooltip_share_percentage_scepter"      "100"
+            }
+            "04"
+            {
+                "var_type"              "FIELD_FLOAT"
+                "respawn"       "0.0"
+            }
+            "05"
+            {
+                "var_type"              "FIELD_INTEGER"
+                "tooltip_respawn"       "20"
+            }
+        }
+    }
+
+}

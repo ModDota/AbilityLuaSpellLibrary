@@ -92,9 +92,9 @@
     }
     // Sniper values last updated:7.07c
 
-    "npc_dota_hero_sniper"
+    "npc_dota_hero_sniper_lua"
     {
-        "override_hero"         "npc_dota_hero_skywrath_mage"
+        "override_hero"         "npc_dota_hero_sniper"
 
         "Ability1"      "sniper_shrapnel_lua"
         "Ability2"      "sniper_take_aim_lua"
@@ -112,5 +112,22 @@
         "Ability17"     "special_bonus_unique_sniper_2"
     }
 
+    "npc_dota_hero_meepo"
+    {
+        "Ability1"      "meepo_earthbind_lua"
+        "Ability2"      "meepo_poof_lua"
+        "Ability3"      "meepo_geostrike_lua"
+        "Ability4"      "generic_hidden"
+        "Ability5"      "generic_hidden"
+        "Ability6"      "meepo_divided_we_stand_lua"
+        "Ability10"     "special_bonus_strength_7"
+        "Ability11"     "special_bonus_attack_damage_20"
+        "Ability12"     "special_bonus_lifesteal_10"
+        "Ability13"     "special_bonus_unique_meepo_2"
+        "Ability14"     "special_bonus_unique_meepo_3"
+        "Ability15"     "special_bonus_evasion_15"
+        "Ability16"     "special_bonus_hp_600"
+        "Ability17"     "special_bonus_unique_meepo"
+    }
 
 }
