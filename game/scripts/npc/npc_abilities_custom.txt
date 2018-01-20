@@ -3,6 +3,7 @@
 #base "heroes/tusk.kv"
 #base "heroes/skywrath_mage.kv"
 #base "heroes/sniper.kv"
+#base "heroes/meepo.kv"
 
 "DOTAAbilities"
 {

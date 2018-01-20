@@ -61,3 +61,9 @@ Temporary Items
 *.vsnd_c
 panorama_debugger.cfg
 game/scripts/vscripts/addon_game_mode.lua
+game/scripts/vscripts/dota-std.d.ts
+game/scripts/vscripts/dota-modifier-properties.d.ts
+game/scripts/vscripts/dota-gameevents.d.ts
+game/scripts/vscripts/dota-enums.d.ts
+game/scripts/vscripts/dota-api.d.ts
+game/scripts/vscripts/tsconfig.json
